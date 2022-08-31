@@ -28,11 +28,6 @@ android {
 
 dependencies {
     implementation(files("libs/pple-sdk.aar"))
-    implementation(files("libs/pple-data.aar"))
-
-    implementation(files("libs/pple-contracts.jar"))
-    implementation(files("libs/pple-domain.jar"))
-    implementation(files("libs/pple-entities.jar"))
 
     implementation(files("libs/ScanditCaptureCore.aar"))
     implementation(files("libs/ScanditBarcodeCapture.aar"))
@@ -54,6 +49,7 @@ dependencies {
     implementation("androidx.work:work-runtime-ktx:2.7.1")
     implementation("androidx.room:room-runtime:2.4.3")
     implementation("androidx.room:room-ktx:2.4.3")
+    implementation("androidx.security:security-crypto:1.1.0-alpha03")
     implementation("androidx.constraintlayout:constraintlayout:2.1.3")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.5.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.0")

@@ -4,10 +4,14 @@ import android.view.View
 import android.widget.TextView
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
-import com.scandit.shelf.catalog.Store
 import com.scandit.shelf.kotlinapp.R
+import com.scandit.shelf.sdk.catalog.Store
 import kotlinx.coroutines.channels.Channel
 
+/**
+ * A RecyclerView ViewHolder that binds and displays the Store item as well
+ * as responds to click event on the item.
+ */
 class StoreViewHolder(
     itemView: View,
     lifecycleOwner: LifecycleOwner,
@@ -22,9 +26,8 @@ class StoreViewHolder(
         }
 
         val storeTextView = itemView.findViewById<TextView>(R.id.item_store_name)
-        viewModel.storeName.observe(lifecycleOwner) {
-            storeTextView.text = it
-        }
+
+        viewModel.storeName.observe(lifecycleOwner, storeTextView::setText)
     }
 
     fun bind(item: Store) {

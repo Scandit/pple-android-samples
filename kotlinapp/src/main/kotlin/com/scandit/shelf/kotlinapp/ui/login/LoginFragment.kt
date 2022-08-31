@@ -17,6 +17,9 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 
+/**
+ * A Fragment that allows user to input email and password required to login to its organization.
+ */
 class LoginFragment : NavigationFragment() {
 
     private lateinit var viewModel: LoginViewModel
@@ -54,12 +57,15 @@ class LoginFragment : NavigationFragment() {
 
     private fun collectFlows() {
         viewLifecycleOwner.lifecycleScope.launch {
+            // Collect Flow that emits login progress and updates the SwipeRefreshLayout widget state.
             viewModel.isRefreshingStateFlow.collectLatest(swipeRefreshLayout::setRefreshing)
         }
 
+        // Collect Flow that emits login result.
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.loginSucceededFlow.filterNotNull().collectLatest { loginSucceeded ->
                 if (loginSucceeded) {
+                    // After successful login, move user to Store selection screen.
                     moveToFragment(StoreSelectionFragment.newInstance(), false, null)
                 } else {
                     showSnackbar("Login failed")

@@ -17,6 +17,9 @@ import com.scandit.shelf.javaapp.R;
 import com.scandit.shelf.javaapp.ui.base.NavigationFragment;
 import com.scandit.shelf.javaapp.ui.storeselection.StoreSelectionFragment;
 
+/**
+ * A Fragment that allows user to input email and password required to login to its organization.
+ */
 public class LoginFragment extends NavigationFragment {
 
     public static LoginFragment newInstance() {
@@ -63,10 +66,13 @@ public class LoginFragment extends NavigationFragment {
     }
 
     private void observeLiveData() {
+        // Observe LiveData that posts login progress and update the SwipeRefreshLayout widget state.
         viewModel.isRefreshingLiveData.observe(getViewLifecycleOwner(), swipeRefreshLayout::setRefreshing);
 
+        // Observe LiveData that posts login result.
         viewModel.loginSucceededLiveData.observe(getViewLifecycleOwner(), loginSucceeded -> {
             if (loginSucceeded) {
+                // After successful login, move user to Store selection screen.
                 moveToFragment(StoreSelectionFragment.newInstance(), false, null);
             } else {
                 showSnackbar("Login failed");

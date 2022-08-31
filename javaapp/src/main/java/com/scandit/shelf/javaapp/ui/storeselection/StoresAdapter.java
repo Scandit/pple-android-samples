@@ -9,9 +9,12 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 
-import com.scandit.shelf.catalog.Store;
+import com.scandit.shelf.sdk.catalog.Store;
 import com.scandit.shelf.javaapp.R;
 
+/**
+ * A RecyclerView Adapter for displaying the list of Stores.
+ */
 public class StoresAdapter extends ListAdapter<Store, StoreViewHolder> {
 
     private final LifecycleOwner lifecycleOwner;

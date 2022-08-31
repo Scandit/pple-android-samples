@@ -10,6 +10,10 @@ import androidx.fragment.app.FragmentTransaction
 import com.google.android.material.snackbar.Snackbar
 import com.scandit.shelf.kotlinapp.R
 
+/**
+ * Base Fragment that handles all basic setup operations such as setting up the toolbar, setting
+ * up navigation from/to the Fragment, inflating options menu and showing a Snackbar message.
+ */
 open class NavigationFragment : Fragment() {
 
     protected lateinit var rootView: View
@@ -51,6 +55,7 @@ open class NavigationFragment : Fragment() {
     protected open fun moveToFragment(fragment: Fragment, addToBackStack: Boolean, tag: String?) {
         val transaction = requireActivity().supportFragmentManager
             .beginTransaction()
+            .setReorderingAllowed(true)
             .replace(R.id.fragment_container, fragment)
             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
 

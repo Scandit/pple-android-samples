@@ -13,18 +13,23 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
-import com.scandit.shelf.core.ui.CaptureView
-import com.scandit.shelf.core.ui.style.Brush
-import com.scandit.shelf.core.ui.viewfinder.RectangularViewfinder
 import com.scandit.shelf.kotlinapp.R
 import com.scandit.shelf.kotlinapp.ui.base.CameraPermissionFragment
 import com.scandit.shelf.kotlinapp.ui.login.LoginFragment
-import com.scandit.shelf.price.PriceCheckResult
-import com.scandit.shelf.price.ui.PriceCheckOverlay
+import com.scandit.shelf.sdk.core.ui.CaptureView
+import com.scandit.shelf.sdk.core.ui.style.Brush
+import com.scandit.shelf.sdk.core.ui.viewfinder.RectangularViewfinder
+import com.scandit.shelf.sdk.price.PriceCheckResult
+import com.scandit.shelf.sdk.price.ui.PriceCheckOverlay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 
+/**
+ * Price checking of Product labels happen in this Fragment. It takes a Store object that was
+ * selected in the StoreSelectionFragment. Additionally, there's an option to click a
+ * button in order to discontinue price checking and log user out of the organization.
+ */
 class PriceCheckFragment : CameraPermissionFragment() {
 
     private lateinit var viewModel: PriceCheckViewModel
@@ -47,9 +52,10 @@ class PriceCheckFragment : CameraPermissionFragment() {
         setUpToolbar(rootView.findViewById(R.id.toolbar), "", true)
 
         rootView.findViewById<View>(R.id.btn_logout).setOnClickListener {
-            viewModel.logout()
+            viewModel.pauseAndLogout()
         }
 
+        // Get the Store name that was passed to this Fragment as argument.
         rootView.findViewById<TextView>(R.id.store_name).text =
             arguments?.getString(ARG_STORE_NAME) ?: ""
 
@@ -60,12 +66,14 @@ class PriceCheckFragment : CameraPermissionFragment() {
 
     override fun onResume() {
         super.onResume()
+        // Good time to request user for camera permission for price label scanning.
         requestCameraPermission()
     }
 
     override fun onCameraPermissionGranted() {
         viewModel.initPriceCheck(
             captureView,
+            // Create an augmented overlay visual that will be shown over price labels.
             PriceCheckOverlay(
                 viewfinder = RectangularViewfinder(),
                 correctPriceBrush = solidBrush(requireContext(), R.color.transparentGreen),
@@ -76,19 +84,23 @@ class PriceCheckFragment : CameraPermissionFragment() {
     }
 
     override fun onPause() {
+        // Pause price checking when Fragment pauses.
         viewModel.pausePriceCheck()
         super.onPause()
     }
 
     private fun collectFlows() {
         viewLifecycleOwner.lifecycleScope.launch {
+            // Collect the Flow that emits price checking results.
             viewModel.resultFlow.filterNotNull().collectLatest {
                 showTopSnackbar(it.toMessage())
             }
         }
         viewLifecycleOwner.lifecycleScope.launch {
+            // Collect the Flow for logout success event.
             viewModel.logoutSucceededFlow.filterNotNull().collectLatest {
                 if (it) {
+                    // Clear Fragment back stack and route to the Login screen.
                     clearBackStack()
                     moveToFragment(LoginFragment.newInstance(), false, null)
                 } else {
@@ -109,6 +121,7 @@ class PriceCheckFragment : CameraPermissionFragment() {
         private const val ARG_STORE_NAME = "store_name"
 
         fun newInstance(storeName: String) =
+            // Create a PriceCheckFragment instance by passing as argument name of the user-selected Store.
             PriceCheckFragment().apply {
                 arguments = Bundle().apply { putString(ARG_STORE_NAME, storeName) }
             }

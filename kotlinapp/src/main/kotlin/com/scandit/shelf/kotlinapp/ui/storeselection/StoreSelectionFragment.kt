@@ -15,16 +15,19 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.textfield.TextInputEditText
-import com.scandit.shelf.catalog.Store
 import com.scandit.shelf.kotlinapp.R
 import com.scandit.shelf.kotlinapp.ui.base.NavigationFragment
 import com.scandit.shelf.kotlinapp.ui.pricecheck.PriceCheckFragment
+import com.scandit.shelf.sdk.catalog.Store
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
+/**
+ * A Fragment that fetches and displays the list of Stores for an organization.
+ */
 class StoreSelectionFragment : NavigationFragment(), SwipeRefreshLayout.OnRefreshListener {
 
     private lateinit var viewModel: StoreSelectionViewModel
@@ -54,6 +57,7 @@ class StoreSelectionFragment : NavigationFragment(), SwipeRefreshLayout.OnRefres
         setupRecyclerView()
         collectFlows()
 
+        // We do an initial update of the list of Stores so that it is not empty.
         viewModel.refreshStores()
     }
 
@@ -76,6 +80,7 @@ class StoreSelectionFragment : NavigationFragment(), SwipeRefreshLayout.OnRefres
         }
 
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            // Collect the Flow that emits the list of fetched Stores.
             viewModel.storeListFlow.collectLatest {
                 storesAdapter.submitList(it.sortedBy { store -> store.name })
             }
@@ -85,6 +90,8 @@ class StoreSelectionFragment : NavigationFragment(), SwipeRefreshLayout.OnRefres
             selectedStoreChannel.receiveAsFlow()
                 .collect {
                     showSnackbar("Fetching the products for ${it.name} (id=${it.id})")
+                    // As soon as the Store selection changes, we request to update the
+                    // list of Products for that Store.
                     viewModel.refreshProducts(it)
                     hideKeyboard()
                 }
@@ -93,25 +100,28 @@ class StoreSelectionFragment : NavigationFragment(), SwipeRefreshLayout.OnRefres
 
     private fun collectFlows() {
         viewLifecycleOwner.lifecycleScope.launch {
+            // Update the SwipeRefreshLayout refresh progress state.
             viewModel.isRefreshingFlow.collectLatest(swipeRefreshLayout::setRefreshing)
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
+            // Respond to any user-facing message generated in the ViewModel.
             viewModel.snackbarMessageFlow.filterNotNull().collectLatest(::showSnackbar)
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
+            // Collect the Flow that emits the user-selected Store for which Product catalog has
+            // been fetched. At this point, we should move to PriceCheckFragment for
+            // price checking in the selected Store.
             viewModel.storeFlow.filterNotNull().collectLatest { store ->
-                moveToFragment(
-                    PriceCheckFragment.newInstance(store.name),
-                    true,
-                    null
-                )
+                moveToFragment(PriceCheckFragment.newInstance(store.name), true, null)
             }
         }
     }
 
     override fun onRefresh() {
+        // User swiped down from top to refresh the list Stores. We reset the search query
+        // in order to not launch any text search for Products.
         searchView.setText("")
         viewModel.refreshStores()
     }
