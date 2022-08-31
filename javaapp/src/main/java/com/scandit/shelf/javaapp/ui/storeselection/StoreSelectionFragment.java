@@ -19,13 +19,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.textfield.TextInputEditText;
-import com.scandit.shelf.catalog.Store;
+import com.scandit.shelf.sdk.catalog.Store;
 import com.scandit.shelf.javaapp.R;
 import com.scandit.shelf.javaapp.ui.base.NavigationFragment;
 import com.scandit.shelf.javaapp.ui.pricecheck.PriceCheckFragment;
 
 import java.util.Collections;
 
+/**
+ * A Fragment that fetches and displays the list of Stores for an organization.
+ */
 public class StoreSelectionFragment extends NavigationFragment implements SwipeRefreshLayout.OnRefreshListener {
 
     public static StoreSelectionFragment newInstance() {
@@ -65,6 +68,7 @@ public class StoreSelectionFragment extends NavigationFragment implements SwipeR
         setupRecyclerView();
         observeLiveData();
 
+        // We do an initial update of the list of Stores so that it is not empty.
         viewModel.refreshStores();
     }
 
@@ -98,6 +102,7 @@ public class StoreSelectionFragment extends NavigationFragment implements SwipeR
         storesRecyclerView.setAdapter(storesAdapter);
         storesRecyclerView.addItemDecoration(new DividerItemDecoration(requireContext(), RecyclerView.VERTICAL));
 
+        // Observe the LiveData that posts the list of fetched Stores.
         viewModel.storeListLiveData.observe(getViewLifecycleOwner(), it -> {
             Collections.sort(it, (o1, o2) -> o1.getName().compareTo(o2.getName()));
             storesAdapter.submitList(it);
@@ -108,6 +113,7 @@ public class StoreSelectionFragment extends NavigationFragment implements SwipeR
                 showSnackbar(
                         "Fetching the products for " + selectedStore.getName() + " (id=" + selectedStore.getId() + ")"
                 );
+                // As soon as the Store selection changes, we request to update the list of Products for that Store.
                 viewModel.refreshProducts(selectedStore);
                 hideKeyboard();
             }
@@ -115,10 +121,15 @@ public class StoreSelectionFragment extends NavigationFragment implements SwipeR
     }
 
     private void observeLiveData() {
+        // Update the SwipeRefreshLayout refresh progress state.
         viewModel.isRefreshingLiveData.observe(getViewLifecycleOwner(), swipeRefreshLayout::setRefreshing);
 
+        // Respond to any user-facing message generated in the ViewModel.
         viewModel.snackbarMessageLiveData.observe(getViewLifecycleOwner(), this::showSnackbar);
 
+        // Observe the LiveData that posts the user-selected Store for which Product catalog has
+        // been fetched. At this point, we should move to PriceCheckFragment for price checking in
+        // the selected Store.
         viewModel.storeLiveData.observe(getViewLifecycleOwner(), store ->
         {
             if (store != null) {
@@ -129,6 +140,8 @@ public class StoreSelectionFragment extends NavigationFragment implements SwipeR
 
     @Override
     public void onRefresh() {
+        // User swiped down from top to refresh the list Stores. We reset the search query
+        // in order to not launch any text search for Products.
         searchView.setText("");
         viewModel.refreshStores();
     }

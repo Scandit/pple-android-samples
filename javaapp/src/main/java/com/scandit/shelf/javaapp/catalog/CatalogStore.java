@@ -1,7 +1,10 @@
 package com.scandit.shelf.javaapp.catalog;
 
-import com.scandit.shelf.catalog.ProductCatalog;
+import com.scandit.shelf.sdk.catalog.ProductCatalog;
 
+/**
+ * A singleton class that stores a ProductCatalog instance.
+ */
 public class CatalogStore {
 
     private static CatalogStore INSTANCE;

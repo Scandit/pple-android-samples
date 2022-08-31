@@ -1,17 +1,24 @@
 package com.scandit.shelf.kotlinapp.ui.login
 
 import androidx.lifecycle.ViewModel
-import com.scandit.shelf.authentication.Authentication
-import com.scandit.shelf.common.CompletionHandler
+import com.scandit.shelf.sdk.authentication.Authentication
+import com.scandit.shelf.sdk.common.CompletionHandler
 import kotlinx.coroutines.flow.MutableStateFlow
 
+/**
+ * A ViewModel responsible for handling user login to organization.
+ */
 class LoginViewModel : ViewModel() {
 
+    // Reports whether login is in progress or not.
     val isRefreshingStateFlow = MutableStateFlow(false)
+
+    // Reports whether or not login operation succeeded.
     val loginSucceededFlow = MutableStateFlow<Boolean?>(null)
 
     fun login(email: String, password: String) {
         setRefreshing(true)
+        // Use the PPLE Authentication singleton to log in the user to an organization.
         Authentication.login(
             email,
             password,

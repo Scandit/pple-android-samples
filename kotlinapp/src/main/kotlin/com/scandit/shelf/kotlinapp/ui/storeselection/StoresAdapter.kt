@@ -4,10 +4,13 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.ListAdapter
-import com.scandit.shelf.catalog.Store
 import com.scandit.shelf.kotlinapp.R
+import com.scandit.shelf.sdk.catalog.Store
 import kotlinx.coroutines.channels.Channel
 
+/**
+ * A RecyclerView Adapter for displaying the list of Stores.
+ */
 class StoresAdapter(
     private val lifecycleOwner: LifecycleOwner,
     private val selectedStoreChannel: Channel<Store>,

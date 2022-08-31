@@ -15,22 +15,28 @@ import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.snackbar.Snackbar;
-import com.scandit.shelf.core.ui.CaptureView;
-import com.scandit.shelf.core.ui.style.Brush;
-import com.scandit.shelf.core.ui.viewfinder.RectangularViewfinder;
+import com.scandit.shelf.sdk.core.ui.style.Brush;
+import com.scandit.shelf.sdk.core.ui.viewfinder.RectangularViewfinder;
+import com.scandit.shelf.sdk.price.PriceCheckResult;
+import com.scandit.shelf.sdk.price.ui.PriceCheckOverlay;
 import com.scandit.shelf.javaapp.R;
 import com.scandit.shelf.javaapp.ui.base.CameraPermissionFragment;
 import com.scandit.shelf.javaapp.ui.login.LoginFragment;
-import com.scandit.shelf.price.PriceCheckResult;
-import com.scandit.shelf.price.ui.PriceCheckOverlay;
+import com.scandit.shelf.sdk.core.ui.CaptureView;
 
 import java.util.Locale;
 
+/**
+ * Price checking of Product labels happen in this Fragment. It takes a Store object that was
+ * selected in the StoreSelectionFragment. Additionally, there's an option to click a
+ * button in order to discontinue price checking and log user out of the organization.
+ */
 public class PriceCheckFragment extends CameraPermissionFragment {
 
     private static final String ARG_STORE_NAME = "store_name";
 
     public static PriceCheckFragment newInstance(String storeName) {
+        // Create a PriceCheckFragment instance by passing as argument name of the user-selected Store.
         Bundle args = new Bundle();
         args.putString(ARG_STORE_NAME, storeName);
         PriceCheckFragment fragment = new PriceCheckFragment();
@@ -63,9 +69,10 @@ public class PriceCheckFragment extends CameraPermissionFragment {
 
         setUpToolbar(rootView.findViewById(R.id.toolbar), "", true);
 
-        ((View) rootView.findViewById(R.id.btn_logout)).setOnClickListener(view1 -> viewModel.logout());
+        rootView.findViewById(R.id.btn_logout).setOnClickListener(view1 -> viewModel.pauseAndLogout());
 
         Bundle args = getArguments();
+        // Get the Store name that was passed to this Fragment as argument.
         String storeName = args == null ? "" : args.getString(ARG_STORE_NAME);
         ((TextView) rootView.findViewById(R.id.store_name)).setText(storeName);
 
@@ -77,6 +84,7 @@ public class PriceCheckFragment extends CameraPermissionFragment {
     @Override
     public void onResume() {
         super.onResume();
+        // Good time to request user for camera permission for price label scanning.
         requestCameraPermission();
     }
 
@@ -84,6 +92,7 @@ public class PriceCheckFragment extends CameraPermissionFragment {
     public void onCameraPermissionGranted() {
         viewModel.initPriceCheck(
                 captureView,
+                // Create an augmented overlay visual that will be shown over price labels.
                 new PriceCheckOverlay(
                         new RectangularViewfinder(),
                         solidBrush(requireContext(), R.color.transparentGreen),
@@ -95,15 +104,18 @@ public class PriceCheckFragment extends CameraPermissionFragment {
 
     @Override
     public void onPause() {
+        // Pause price checking when Fragment pauses.
         viewModel.pausePriceCheck();
         super.onPause();
     }
 
     private void observeLiveData() {
+        // Observe the LivaData that posts price checking results.
         viewModel.resultLiveData.observe(
                 getViewLifecycleOwner(),
                 priceCheckResult -> showTopSnackbar(toMessage(priceCheckResult))
         );
+        // Observe the LiveData that posts logout success event.
         viewModel.logoutSucceededLiveData.observe(
                 getViewLifecycleOwner(),
                 loggedOut -> {

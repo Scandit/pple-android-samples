@@ -8,9 +8,13 @@ import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.scandit.shelf.catalog.Store;
 import com.scandit.shelf.javaapp.R;
+import com.scandit.shelf.sdk.catalog.Store;
 
+/**
+ * A RecyclerView ViewHolder that binds and displays the Store item as well
+ * as responds to click event on the item.
+ */
 public class StoreViewHolder extends RecyclerView.ViewHolder {
 
     private final StoreItemViewModel viewModel;
@@ -26,6 +30,7 @@ public class StoreViewHolder extends RecyclerView.ViewHolder {
         itemView.setOnClickListener(v -> viewModel.onClick());
 
         TextView storeTextView = itemView.findViewById(R.id.item_store_name);
+
         viewModel.storeName.observe(lifecycleOwner, storeTextView::setText);
     }
 

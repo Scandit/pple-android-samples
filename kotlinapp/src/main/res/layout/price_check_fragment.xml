@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".ui.pricecheck.PriceCheckFragment">
 
-    <com.scandit.shelf.core.ui.CaptureView
+    <com.scandit.shelf.sdk.core.ui.CaptureView
         android:id="@+id/capture_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

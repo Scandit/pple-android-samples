@@ -16,6 +16,10 @@ import androidx.fragment.app.FragmentTransaction;
 import com.google.android.material.snackbar.Snackbar;
 import com.scandit.shelf.javaapp.R;
 
+/**
+ * Base Fragment that handles all basic setup operations such as setting up the toolbar, setting
+ * up navigation from/to the Fragment, inflating options menu and showing a Snackbar message.
+ */
 public class NavigationFragment extends Fragment {
 
     protected View rootView;
@@ -60,6 +64,7 @@ public class NavigationFragment extends Fragment {
     protected void moveToFragment(Fragment fragment, boolean addToBackStack, String tag) {
         FragmentTransaction transaction = requireActivity().getSupportFragmentManager()
                 .beginTransaction()
+                .setReorderingAllowed(true)
                 .replace(R.id.fragment_container, fragment)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
 
