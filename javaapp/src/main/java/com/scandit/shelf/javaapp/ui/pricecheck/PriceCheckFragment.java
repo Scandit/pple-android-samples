@@ -1,3 +1,17 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.scandit.shelf.javaapp.ui.pricecheck;
 
 import android.content.Context;
@@ -15,14 +29,14 @@ import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.snackbar.Snackbar;
-import com.scandit.shelf.sdk.core.ui.style.Brush;
-import com.scandit.shelf.sdk.core.ui.viewfinder.RectangularViewfinder;
-import com.scandit.shelf.sdk.price.PriceCheckResult;
-import com.scandit.shelf.sdk.price.ui.PriceCheckOverlay;
 import com.scandit.shelf.javaapp.R;
 import com.scandit.shelf.javaapp.ui.base.CameraPermissionFragment;
 import com.scandit.shelf.javaapp.ui.login.LoginFragment;
 import com.scandit.shelf.sdk.core.ui.CaptureView;
+import com.scandit.shelf.sdk.core.ui.style.Brush;
+import com.scandit.shelf.sdk.core.ui.viewfinder.RectangularViewfinder;
+import com.scandit.shelf.sdk.price.PriceCheckResult;
+import com.scandit.shelf.sdk.price.ui.PriceCheckOverlay;
 
 import java.util.Locale;
 
@@ -92,9 +106,9 @@ public class PriceCheckFragment extends CameraPermissionFragment {
     public void onCameraPermissionGranted() {
         viewModel.initPriceCheck(
                 captureView,
-                // Create an augmented overlay visual that will be shown over price labels.
                 new PriceCheckOverlay(
                         new RectangularViewfinder(),
+                        null,
                         solidBrush(requireContext(), R.color.transparentGreen),
                         solidBrush(requireContext(), R.color.transparentRed),
                         solidBrush(requireContext(), R.color.transparentGrey)
@@ -111,22 +125,19 @@ public class PriceCheckFragment extends CameraPermissionFragment {
 
     private void observeLiveData() {
         // Observe the LivaData that posts price checking results.
-        viewModel.resultLiveData.observe(
+        viewModel.getResult().observe(
                 getViewLifecycleOwner(),
                 priceCheckResult -> showTopSnackbar(toMessage(priceCheckResult))
         );
         // Observe the LiveData that posts logout success event.
-        viewModel.logoutSucceededLiveData.observe(
-                getViewLifecycleOwner(),
-                loggedOut -> {
-                    if (loggedOut) {
-                        clearBackStack();
-                        moveToFragment(LoginFragment.newInstance(), false, null);
-                    } else {
-                        showSnackbar("Logout failed");
-                    }
-                }
-        );
+        viewModel.hasLogoutSucceeded().observe(getViewLifecycleOwner(), loggedOut -> {
+            if (loggedOut) {
+                clearBackStack();
+                moveToFragment(LoginFragment.newInstance(), false, null);
+            } else {
+                showSnackbar("Logout failed");
+            }
+        });
     }
 
     private String toMessage(PriceCheckResult priceCheckResult) {

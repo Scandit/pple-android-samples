@@ -1,3 +1,17 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.scandit.shelf.javaapp.ui.pricecheck;
 
 import androidx.annotation.NonNull;
@@ -5,15 +19,15 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.scandit.shelf.sdk.catalog.ProductCatalog;
-import com.scandit.shelf.sdk.common.CompletionHandler;
-import com.scandit.shelf.sdk.price.PriceCheckResult;
-import com.scandit.shelf.sdk.price.ui.PriceCheckOverlay;
 import com.scandit.shelf.javaapp.catalog.CatalogStore;
 import com.scandit.shelf.sdk.authentication.Authentication;
+import com.scandit.shelf.sdk.catalog.ProductCatalog;
+import com.scandit.shelf.sdk.common.CompletionHandler;
 import com.scandit.shelf.sdk.core.ui.CaptureView;
 import com.scandit.shelf.sdk.price.PriceCheck;
 import com.scandit.shelf.sdk.price.PriceCheckListener;
+import com.scandit.shelf.sdk.price.PriceCheckResult;
+import com.scandit.shelf.sdk.price.ui.PriceCheckOverlay;
 
 import kotlin.Unit;
 
@@ -25,13 +39,18 @@ public class PriceCheckViewModel extends ViewModel implements PriceCheckListener
 
     private PriceCheck priceCheck = null;
 
-    private final MutableLiveData<PriceCheckResult> _resultLiveData = new MutableLiveData<>();
-    // Posts the price check result.
-    LiveData<PriceCheckResult> resultLiveData = _resultLiveData;
+    private final MutableLiveData<PriceCheckResult> resultLiveData = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> logoutSucceededLiveData = new MutableLiveData<>();
 
-    private final MutableLiveData<Boolean> _logoutSucceededLiveData = new MutableLiveData<>();
+    // Posts the price check result.
+    public LiveData<PriceCheckResult> getResult() {
+        return resultLiveData;
+    }
+
     // Posts a Boolean when user is successfully logged out.
-    LiveData<Boolean> logoutSucceededLiveData = _logoutSucceededLiveData;
+    public LiveData<Boolean> hasLogoutSucceeded() {
+        return logoutSucceededLiveData;
+    }
 
     public void initPriceCheck(CaptureView view, PriceCheckOverlay overlay) {
         // Get the ProductCatalog object previously stored in CatalogStore
@@ -40,7 +59,9 @@ public class PriceCheckViewModel extends ViewModel implements PriceCheckListener
         // Initialize the PriceCheck object
         priceCheck = new PriceCheck(view, catalog);
         priceCheck.addListener(this);
-        // Add a PriceCheckOverlay created in PriceCheckFragment
+        // Add a PriceCheckOverlay created in PriceCheckFragment.
+        // By default, price labels are sought on the whole capture view. If you want to limit the scan area,
+        // pass a non-null LocationSelection to PriceCheckOverlay's constructor.
         priceCheck.setOverlay(overlay);
         priceCheck.enable(new CompletionHandler<Unit>() {
             @Override
@@ -93,13 +114,13 @@ public class PriceCheckViewModel extends ViewModel implements PriceCheckListener
             @Override
             public void success(Unit result) {
                 // User was logged out successfully. Communicate with PriceCheckFragment.
-                _logoutSucceededLiveData.postValue(true);
+                logoutSucceededLiveData.postValue(true);
             }
 
             @Override
             public void failure(@NonNull Exception error) {
                 // Logout failed. Communicate with PriceCheckFragment.
-                _logoutSucceededLiveData.postValue(false);
+                logoutSucceededLiveData.postValue(false);
             }
         });
     }
@@ -107,18 +128,18 @@ public class PriceCheckViewModel extends ViewModel implements PriceCheckListener
     @Override
     public void onCorrectPrice(@NonNull PriceCheckResult priceCheckResult) {
         // Handle result that a Product label was scanned with correct price
-        _resultLiveData.postValue(priceCheckResult);
+        resultLiveData.postValue(priceCheckResult);
     }
 
     @Override
     public void onWrongPrice(@NonNull PriceCheckResult priceCheckResult) {
         // Handle result that a Product label was scanned with wrong price
-        _resultLiveData.postValue(priceCheckResult);
+        resultLiveData.postValue(priceCheckResult);
     }
 
     @Override
     public void onUnknownProduct(@NonNull PriceCheckResult priceCheckResult) {
         // Handle result that a Product label was scanned for an unknown Product
-        _resultLiveData.postValue(priceCheckResult);
+        resultLiveData.postValue(priceCheckResult);
     }
 }

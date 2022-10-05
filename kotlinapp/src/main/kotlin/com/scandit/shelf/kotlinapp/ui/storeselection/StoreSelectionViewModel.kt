@@ -1,3 +1,17 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.scandit.shelf.kotlinapp.ui.storeselection
 
 import androidx.lifecycle.ViewModel
@@ -88,7 +102,15 @@ class StoreSelectionViewModel : ViewModel() {
 
     private fun getProducts(store: Store) {
         // Get/Update the Product items for a given Store.
-        // First get the ProductCatalog object with the Catalog singleton object of the PPLE SDK.
+
+        // First create the ProductCatalog object.
+        //
+        // If you are using the ShelfView backend as your product catalog provider, you only need to specify the Store,
+        // for which you will perform the Price Check - just like in the code below.
+        //
+        // If on the other hand, you would like to use a different source of data for the ProductCatalog,
+        // you should should pass your custom implementation of the ProductProvider interface, as the second argument
+        // for the Catalog.getProductCatalog method - check the docs for more details.
         Catalog.getProductCatalog(store).apply {
             // Store the ProductCatalog object to CatalogStore. We will need it for price check in PriceCheckViewModel.
             CatalogStore.productCatalog = this

@@ -1,3 +1,17 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.scandit.shelf.kotlinapp.ui.pricecheck
 
 import androidx.lifecycle.ViewModel
@@ -31,7 +45,9 @@ class PriceCheckViewModel : ViewModel(), PriceCheckListener {
             // Initialize the PriceCheck object
             priceCheck = PriceCheck(view, it).apply {
                 addListener(this@PriceCheckViewModel)
-                // Add a PriceCheckOverlay created in PriceCheckFragment
+                // Add a PriceCheckOverlay created in PriceCheckFragment.
+                // By default, price labels are sought on the whole capture view. If you want to limit the scan area,
+                // pass a non-null LocationSelection to PriceCheckOverlay's constructor.
                 setOverlay(overlay)
                 enable(object : CompletionHandler<Unit> {
                     override fun success(result: Unit) {

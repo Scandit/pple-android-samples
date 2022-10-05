@@ -1,3 +1,17 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.scandit.shelf.javaapp.ui.login;
 
 import android.os.Bundle;
@@ -67,10 +81,10 @@ public class LoginFragment extends NavigationFragment {
 
     private void observeLiveData() {
         // Observe LiveData that posts login progress and update the SwipeRefreshLayout widget state.
-        viewModel.isRefreshingLiveData.observe(getViewLifecycleOwner(), swipeRefreshLayout::setRefreshing);
+        viewModel.isRefreshing().observe(getViewLifecycleOwner(), swipeRefreshLayout::setRefreshing);
 
         // Observe LiveData that posts login result.
-        viewModel.loginSucceededLiveData.observe(getViewLifecycleOwner(), loginSucceeded -> {
+        viewModel.hasLoginSucceeded().observe(getViewLifecycleOwner(), loginSucceeded -> {
             if (loginSucceeded) {
                 // After successful login, move user to Store selection screen.
                 moveToFragment(StoreSelectionFragment.newInstance(), false, null);
