@@ -1,3 +1,17 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.scandit.shelf.javaapp.ui.storeselection;
 
 import android.view.LayoutInflater;
@@ -21,7 +35,7 @@ public class StoresAdapter extends ListAdapter<Store, StoreViewHolder> {
     private final MutableLiveData<Store> selectedStoreLiveData;
 
     public StoresAdapter(LifecycleOwner lifecycleOwner, MutableLiveData<Store> selectedStoreLiveData) {
-        super(DIFF_CALLBACK);
+        super(diffCallback);
         this.lifecycleOwner = lifecycleOwner;
         this.selectedStoreLiveData = selectedStoreLiveData;
     }
@@ -41,7 +55,7 @@ public class StoresAdapter extends ListAdapter<Store, StoreViewHolder> {
         holder.bind(getItem(position));
     }
 
-    static DiffUtil.ItemCallback<Store> DIFF_CALLBACK = new DiffUtil.ItemCallback<Store>() {
+    static DiffUtil.ItemCallback<Store> diffCallback = new DiffUtil.ItemCallback<Store>() {
 
         @Override
         public boolean areItemsTheSame(@NonNull Store oldItem, @NonNull Store newItem) {

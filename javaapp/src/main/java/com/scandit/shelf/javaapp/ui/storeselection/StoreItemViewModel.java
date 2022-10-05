@@ -1,3 +1,17 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.scandit.shelf.javaapp.ui.storeselection;
 
 import androidx.lifecycle.LiveData;
@@ -15,9 +29,12 @@ public class StoreItemViewModel {
     // Refers to the current Store item bound through StoresAdapter
     private Store item = null;
 
-    MutableLiveData<String> _storeName = new MutableLiveData<>();
+    private final MutableLiveData<String> storeName = new MutableLiveData<>();
+
     // Observes Store item binding in StoresAdapter
-    LiveData<String> storeName = _storeName;
+    public LiveData<String> getStoreName() {
+        return storeName;
+    }
 
     public StoreItemViewModel(MutableLiveData<Store> selectedStoreLiveData) {
         this.selectedStoreLiveData = selectedStoreLiveData;
@@ -25,7 +42,7 @@ public class StoreItemViewModel {
 
     public void bind(Store store) {
         item = store;
-        _storeName.postValue(store.getName());
+        storeName.postValue(store.getName());
     }
 
     public void onClick() {

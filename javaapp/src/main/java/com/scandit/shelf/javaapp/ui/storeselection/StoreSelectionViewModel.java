@@ -1,3 +1,17 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.scandit.shelf.javaapp.ui.storeselection;
 
 import androidx.annotation.NonNull;
@@ -5,11 +19,11 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.scandit.shelf.javaapp.catalog.CatalogStore;
+import com.scandit.shelf.sdk.catalog.Catalog;
 import com.scandit.shelf.sdk.catalog.ProductCatalog;
 import com.scandit.shelf.sdk.catalog.Store;
 import com.scandit.shelf.sdk.common.CompletionHandler;
-import com.scandit.shelf.javaapp.catalog.CatalogStore;
-import com.scandit.shelf.sdk.catalog.Catalog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,27 +42,36 @@ public class StoreSelectionViewModel extends ViewModel {
     private final List<Store> allStores = new ArrayList<>();
     private String searchText = "";
 
-    private final MutableLiveData<Boolean> _isRefreshingLiveData = new MutableLiveData<>();
-    LiveData<Boolean> isRefreshingLiveData = _isRefreshingLiveData;
+    private final MutableLiveData<Boolean> isRefreshingLiveData = new MutableLiveData<>();
+    private final MutableLiveData<String> snackbarMessageLiveData = new MutableLiveData<>();
+    private final MutableLiveData<List<Store>> storeListLiveData = new MutableLiveData<>(allStores);
+    private final MutableLiveData<Store> storeLiveData = new MutableLiveData<>();
 
-    private final MutableLiveData<String> _snackbarMessageLiveData = new MutableLiveData<>();
-    LiveData<String> snackbarMessageLiveData = _snackbarMessageLiveData;
+    public LiveData<Boolean> isRefreshing() {
+        return isRefreshingLiveData;
+    }
 
-    private final MutableLiveData<List<Store>> _storeListLiveData = new MutableLiveData<>(allStores);
-    LiveData<List<Store>> storeListLiveData = _storeListLiveData;
+    public LiveData<String> getSnackbarMessage() {
+        return snackbarMessageLiveData;
+    }
 
-    private final MutableLiveData<Store> _storeLiveData = new MutableLiveData<>();
+    public LiveData<List<Store>> getStoreList() {
+        return storeListLiveData;
+    }
+
     // Posts the Store for which Product catalog is updated with a call to refreshProducts().
-    LiveData<Store> storeLiveData = _storeLiveData;
+    public LiveData<Store> getStore() {
+        return storeLiveData;
+    }
 
     public void initStoreSelection() {
         // Initialize CatalogStore with a null ProductCatalog
         CatalogStore.getInstance().setProductCatalog(null);
         // Set initial values to the LiveData that communicate with StoreSelectionFragment
-        _snackbarMessageLiveData.setValue(null);
+        snackbarMessageLiveData.setValue(null);
         allStores.clear();
-        _storeListLiveData.setValue(allStores);
-        _storeLiveData.setValue(null);
+        storeListLiveData.setValue(allStores);
+        storeLiveData.setValue(null);
     }
 
     public void refreshStores() {
@@ -67,7 +90,7 @@ public class StoreSelectionViewModel extends ViewModel {
     }
 
     private void setRefreshing(boolean isRefreshing) {
-        _isRefreshingLiveData.postValue(isRefreshing);
+        isRefreshingLiveData.postValue(isRefreshing);
     }
 
     private void getStores() {
@@ -86,7 +109,7 @@ public class StoreSelectionViewModel extends ViewModel {
             @Override
             public void failure(@NonNull Exception error) {
                 // The API call to update Stores has failed. Communicate the error with Fragment.
-                _snackbarMessageLiveData.postValue("Fetching the list of stores failed");
+                snackbarMessageLiveData.postValue("Fetching the list of stores failed");
                 setRefreshing(false);
             }
         });
@@ -101,7 +124,7 @@ public class StoreSelectionViewModel extends ViewModel {
             }
         }
         // Post the filtered stores list to Fragment
-        _storeListLiveData.postValue(filteredStores);
+        storeListLiveData.postValue(filteredStores);
     }
 
     private boolean containsIgnoringCase(String s1, String s2) {
@@ -110,7 +133,15 @@ public class StoreSelectionViewModel extends ViewModel {
 
     private void getProducts(Store store) {
         // Get/Update the Product items for a given Store.
-        // First get the ProductCatalog object with the Catalog singleton object of the PPLE SDK.
+
+        // First create the ProductCatalog object.
+        //
+        // If you are using the ShelfView backend as your product catalog provider, you only need to specify the Store,
+        // for which you will perform the Price Check - just like in the code below.
+        //
+        // If on the other hand, you would like to use a different source of data for the ProductCatalog,
+        // you should should pass your custom implementation of the ProductProvider interface, as the second argument
+        // for the Catalog.getProductCatalog method - check the docs for more details.
         ProductCatalog catalog = Catalog.getProductCatalog(store);
         // Store the ProductCatalog object to CatalogStore. We will need it for price check in PriceCheckViewModel.
         CatalogStore.getInstance().setProductCatalog(catalog);
@@ -120,18 +151,18 @@ public class StoreSelectionViewModel extends ViewModel {
                     @Override
                     public void success(Unit result) {
                         // Product catalog was fetched and stored successfully. Update UI accordingly.
-                        _snackbarMessageLiveData.postValue(
+                        snackbarMessageLiveData.postValue(
                                 "Updating the Product Catalog for store " + store.getName()
                                         + " (id=" + store.getId() + ") ready"
                         );
                         setRefreshing(false);
-                        _storeLiveData.postValue(store);
+                        storeLiveData.postValue(store);
                     }
 
                     @Override
                     public void failure(@NonNull Exception error) {
                         // Catalog fetch failed. Communicate the error with Fragment through LiveData.
-                        _snackbarMessageLiveData.postValue(
+                        snackbarMessageLiveData.postValue(
                                 "Updating the Product Catalog for store with id=" + store.getId() + " failed"
                         );
                         setRefreshing(false);
