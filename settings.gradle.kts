@@ -1,1 +1,4 @@
-include(":javaapp", ":kotlinapp")
+include(
+    ":JavaSimpleSample",
+    ":KotlinSimpleSample"
+)

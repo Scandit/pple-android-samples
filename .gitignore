@@ -1,7 +1,7 @@
 .gradle/
 .DS_Store
 .java-version
-.idea
+.idea/
 
 libs/
 build/
