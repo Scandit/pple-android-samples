@@ -1,4 +1,6 @@
 include(
     ":JavaSimpleSample",
-    ":KotlinSimpleSample"
+    ":KotlinSimpleSample",
+    ":JavaAdvancedOverlaySample",
+    ":KotlinAdvancedOverlaySample"
 )
