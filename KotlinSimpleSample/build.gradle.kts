@@ -32,7 +32,6 @@ dependencies {
     implementation(files("libs/ScanditCaptureCore.aar"))
     implementation(files("libs/ScanditBarcodeCapture.aar"))
     implementation(files("libs/ScanditLabelCapture.aar"))
-    implementation(files("libs/ScanditTextCaptureBase.aar"))
     implementation(files("libs/ScanditPriceLabel.aar"))
 
     implementation("androidx.core:core-ktx:1.9.0")
