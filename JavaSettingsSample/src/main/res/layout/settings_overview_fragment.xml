@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/black80Transparent"
+        android:theme="@style/ThemeOverlay.MaterialComponents.Dark"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_overview"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/default_dimen_mid_small"
+        android:layout_marginBottom="@dimen/default_dimen_mid_small"
+        android:background="@color/white"
+        android:elevation="@dimen/elevation_level_2"
+        android:paddingTop="@dimen/default_dimen_mid_small"
+        android:paddingBottom="@dimen/default_dimen_mid_small"
+        app:layout_constraintBottom_toTopOf="@+id/sdk_version"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        tools:listitem="@layout/single_text_layout" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/sdk_version"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/default_dimen_mid_big"
+        android:gravity="center"
+        android:textColor="@color/darkGrey"
+        android:textSize="@dimen/scalable_text_size"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/recycler_overview"
+        tools:text="SDK Version" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

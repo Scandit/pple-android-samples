@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Kotlin PPLE External Catalog Sample</string>
+    <string name="camera_permission_denied">Price Check requires access to the camera.</string>
+</resources>

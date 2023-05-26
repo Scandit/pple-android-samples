@@ -1,16 +1,9 @@
 <resources>
     <string name="app_name">Kotlin PPLE Simple Sample</string>
-
-    <!-- Login -->
-    <string name="login_welcome">Welcome to Kotlin PPLE Simple Sample!</string>
-    <string name="login_email_field">Email Address</string>
-    <string name="login_password_field">Password</string>
-    <string name="login_btn_text">Login</string>
-
-    <!-- Store Selection -->
-    <string name="store_selection">Select your Store</string>
-    <string name="store_selection_hint">Store</string>
-
-    <!-- Price Check -->
-    <string name="logout">Log out</string>
+    <string name="init">Preparing to launch Price Check</string>
+    <string name="camera_permission_denied">Price Check requires access to the camera</string>
+    <string name="authentication_failed">Failed to authenticate</string>
+    <string name="store_download_failed">Failed to fetch the Stores</string>
+    <string name="stores_empty">Organization has no stores</string>
+    <string name="catalog_download_Failed">Failed to fetch the config for the store</string>
 </resources>

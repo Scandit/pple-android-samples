@@ -1,6 +1,6 @@
 include(
+    ":JavaSettingsSample",
     ":JavaSimpleSample",
-    ":KotlinSimpleSample",
-    ":JavaAdvancedOverlaySample",
-    ":KotlinAdvancedOverlaySample"
+    ":KotlinExternalCatalogSample",
+    ":KotlinSimpleSample"
 )

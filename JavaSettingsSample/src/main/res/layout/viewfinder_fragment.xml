@@ -1,0 +1,777 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/black80Transparent"
+        android:theme="@style/ThemeOverlay.MaterialComponents.Dark"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/default_dimen_mid_small"
+                android:layout_marginBottom="@dimen/default_dimen_mid_small"
+                android:background="@android:color/white"
+                app:cardCornerRadius="0dp"
+                app:cardElevation="@dimen/elevation_level_2">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingTop="@dimen/default_dimen_mid_small">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        style="@style/TitleText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="@string/type" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recycler_viewfinder_types"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clipToPadding="false"
+                        android:isScrollContainer="false"
+                        android:nestedScrollingEnabled="false"
+                        android:overScrollMode="never"
+                        android:paddingTop="@dimen/default_dimen_mid_small"
+                        android:paddingBottom="@dimen/default_dimen_mid_small"
+                        tools:itemCount="3"
+                        tools:listitem="@layout/two_texts_and_icon_layout" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/text_viewfinder_type"
+                style="@style/TitleText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                tools:text="Rectangular" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/card_rectangular"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/default_dimen_mid_small"
+                android:background="@android:color/white"
+                app:cardCornerRadius="0dp"
+                app:cardElevation="@dimen/elevation_level_2">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/default_dimen_mid_small"
+                    android:layout_marginBottom="@dimen/default_dimen_mid_small"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:id="@+id/container_rectangular_style"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="?android:attr/listPreferredItemHeightSmall"
+                            android:ellipsize="end"
+                            android:gravity="center_vertical"
+                            android:maxLines="1"
+                            android:paddingStart="@dimen/default_dimen_big"
+                            android:paddingEnd="@dimen/default_dimen_small"
+                            android:text="@string/style"
+                            android:textAppearance="?android:attr/textAppearanceListItem" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/text_rectangular_style"
+                            android:layout_width="match_parent"
+                            android:layout_height="?android:attr/listPreferredItemHeightSmall"
+                            android:ellipsize="end"
+                            android:gravity="center_vertical|end"
+                            android:maxLines="1"
+                            android:paddingStart="@dimen/default_dimen_small"
+                            android:paddingEnd="@dimen/default_dimen_big"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                            tools:text="Legacy" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/container_rectangular_line_style"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="?android:attr/listPreferredItemHeightSmall"
+                            android:ellipsize="end"
+                            android:gravity="center_vertical"
+                            android:maxLines="1"
+                            android:paddingStart="@dimen/default_dimen_big"
+                            android:paddingEnd="@dimen/default_dimen_small"
+                            android:text="@string/line_style"
+                            android:textAppearance="?android:attr/textAppearanceListItem" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/text_rectangular_line_style"
+                            android:layout_width="match_parent"
+                            android:layout_height="?android:attr/listPreferredItemHeightSmall"
+                            android:ellipsize="end"
+                            android:gravity="center_vertical|end"
+                            android:maxLines="1"
+                            android:paddingStart="@dimen/default_dimen_small"
+                            android:paddingEnd="@dimen/default_dimen_big"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                            tools:text="Light" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/container_rectangular_dimming"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="0dp"
+                            android:layout_height="?android:attr/listPreferredItemHeightSmall"
+                            android:layout_weight="1"
+                            android:ellipsize="end"
+                            android:gravity="center_vertical"
+                            android:labelFor="@id/edit_rectangular_width"
+                            android:maxLines="1"
+                            android:paddingStart="@dimen/default_dimen_big"
+                            android:paddingEnd="@dimen/default_dimen_small"
+                            android:text="@string/dimming"
+                            android:textAppearance="?android:attr/textAppearanceListItem" />
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/edit_rectangular_dimming"
+                            android:layout_width="@dimen/default_dimen_very_huge"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="end"
+                            android:layout_marginEnd="@dimen/default_dimen_big"
+                            android:gravity="center_vertical|end"
+                            android:imeOptions="actionDone"
+                            android:inputType="numberDecimal"
+                            android:lines="1"
+                            android:maxLines="1"
+                            android:paddingStart="@dimen/default_dimen_small"
+                            android:paddingEnd="@dimen/default_dimen_small"
+                            android:saveEnabled="false"
+                            android:selectAllOnFocus="true" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/container_rectangular_color"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="?android:attr/listPreferredItemHeightSmall"
+                            android:ellipsize="end"
+                            android:gravity="center_vertical"
+                            android:maxLines="1"
+                            android:paddingStart="@dimen/default_dimen_big"
+                            android:paddingEnd="@dimen/default_dimen_small"
+                            android:text="@string/color"
+                            android:textAppearance="?android:attr/textAppearanceListItem" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/text_rectangular_color"
+                            android:layout_width="match_parent"
+                            android:layout_height="?android:attr/listPreferredItemHeightSmall"
+                            android:ellipsize="end"
+                            android:gravity="center_vertical|end"
+                            android:maxLines="1"
+                            android:paddingStart="@dimen/default_dimen_small"
+                            android:paddingEnd="@dimen/default_dimen_big"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                            tools:text="Default" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/container_rectangular_disabled_color"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="?android:attr/listPreferredItemHeightSmall"
+                            android:ellipsize="end"
+                            android:gravity="center_vertical"
+                            android:maxLines="1"
+                            android:paddingStart="@dimen/default_dimen_big"
+                            android:paddingEnd="@dimen/default_dimen_small"
+                            android:text="@string/disabled_color"
+                            android:textAppearance="?android:attr/textAppearanceListItem" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/text_rectangular_disabled_color"
+                            android:layout_width="match_parent"
+                            android:layout_height="?android:attr/listPreferredItemHeightSmall"
+                            android:ellipsize="end"
+                            android:gravity="center_vertical|end"
+                            android:maxLines="1"
+                            android:paddingStart="@dimen/default_dimen_small"
+                            android:paddingEnd="@dimen/default_dimen_big"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                            tools:text="Default" />
+                    </LinearLayout>
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/switch_rectangular_animation"
+                        android:layout_width="match_parent"
+                        android:layout_height="?android:attr/listPreferredItemHeightSmall"
+                        android:layout_marginTop="@dimen/default_dimen_mid_small"
+                        android:layout_marginBottom="@dimen/default_dimen_mid_small"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:paddingStart="@dimen/default_dimen_big"
+                        android:paddingTop="@dimen/default_dimen_mid_small"
+                        android:paddingEnd="@dimen/default_dimen_big"
+                        android:paddingBottom="@dimen/default_dimen_mid_small"
+                        android:saveEnabled="false"
+                        android:text="@string/animation"
+                        android:textAppearance="?android:attr/textAppearanceListItem" />
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/switch_rectangular_looping"
+                        android:layout_width="match_parent"
+                        android:layout_height="?android:attr/listPreferredItemHeightSmall"
+                        android:layout_marginTop="@dimen/default_dimen_mid_small"
+                        android:layout_marginBottom="@dimen/default_dimen_mid_small"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:paddingStart="@dimen/default_dimen_big"
+                        android:paddingTop="@dimen/default_dimen_mid_small"
+                        android:paddingEnd="@dimen/default_dimen_big"
+                        android:paddingBottom="@dimen/default_dimen_mid_small"
+                        android:saveEnabled="false"
+                        android:text="@string/looping"
+                        android:textAppearance="?android:attr/textAppearanceListItem" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/card_rectangular_size"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/default_dimen_mid_small"
+                android:background="@android:color/white"
+                app:cardCornerRadius="0dp"
+                app:cardElevation="@dimen/elevation_level_2">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/default_dimen_mid_small"
+                    android:layout_marginBottom="@dimen/default_dimen_mid_small"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:id="@+id/container_rectangular_size_specification"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/default_dimen_mid_small"
+                        android:layout_marginBottom="@dimen/default_dimen_mid_small"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="?android:attr/listPreferredItemHeightSmall"
+                            android:ellipsize="end"
+                            android:gravity="center_vertical"
+                            android:maxLines="1"
+                            android:paddingStart="@dimen/default_dimen_big"
+                            android:paddingEnd="@dimen/default_dimen_small"
+                            android:text="@string/size_specification"
+                            android:textAppearance="?android:attr/textAppearanceListItem" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/text_rectangular_size_specification"
+                            android:layout_width="match_parent"
+                            android:layout_height="?android:attr/listPreferredItemHeightSmall"
+                            android:ellipsize="end"
+                            android:gravity="center_vertical|end"
+                            android:maxLines="1"
+                            android:paddingStart="@dimen/default_dimen_small"
+                            android:paddingEnd="@dimen/default_dimen_big"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                            tools:text="Width and Height Aspect" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/container_rectangular_width"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="?android:attr/listPreferredItemHeightSmall"
+                            android:ellipsize="end"
+                            android:gravity="center_vertical"
+                            android:maxLines="1"
+                            android:paddingStart="@dimen/default_dimen_big"
+                            android:paddingEnd="@dimen/default_dimen_small"
+                            android:text="@string/width"
+                            android:textAppearance="?android:attr/textAppearanceListItem" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/text_rectangular_width"
+                            android:layout_width="match_parent"
+                            android:layout_height="?android:attr/listPreferredItemHeightSmall"
+                            android:ellipsize="end"
+                            android:gravity="center_vertical|end"
+                            android:maxLines="1"
+                            android:paddingStart="@dimen/default_dimen_small"
+                            android:paddingEnd="@dimen/default_dimen_big"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                            tools:text="0.00 (DIP)" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/container_rectangular_height"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="?android:attr/listPreferredItemHeightSmall"
+                            android:ellipsize="end"
+                            android:gravity="center_vertical"
+                            android:maxLines="1"
+                            android:paddingStart="@dimen/default_dimen_big"
+                            android:paddingEnd="@dimen/default_dimen_small"
+                            android:text="@string/height"
+                            android:textAppearance="?android:attr/textAppearanceListItem" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/text_rectangular_height"
+                            android:layout_width="match_parent"
+                            android:layout_height="?android:attr/listPreferredItemHeightSmall"
+                            android:ellipsize="end"
+                            android:gravity="center_vertical|end"
+                            android:maxLines="1"
+                            android:paddingStart="@dimen/default_dimen_small"
+                            android:paddingEnd="@dimen/default_dimen_big"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                            tools:text="0.00 (DIP)" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/container_rectangular_shorter_dimension"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="0dp"
+                            android:layout_height="?android:attr/listPreferredItemHeightSmall"
+                            android:layout_weight="1"
+                            android:ellipsize="end"
+                            android:gravity="center_vertical"
+                            android:labelFor="@id/edit_rectangular_shorter_dimension"
+                            android:maxLines="1"
+                            android:paddingStart="@dimen/default_dimen_big"
+                            android:paddingEnd="@dimen/default_dimen_small"
+                            android:text="@string/shorter_dimension"
+                            android:textAppearance="?android:attr/textAppearanceListItem" />
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/edit_rectangular_shorter_dimension"
+                            android:layout_width="@dimen/default_dimen_very_huge"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="end"
+                            android:layout_marginEnd="@dimen/default_dimen_big"
+                            android:gravity="center_vertical|end"
+                            android:imeOptions="actionDone"
+                            android:inputType="numberDecimal"
+                            android:lines="1"
+                            android:maxLines="1"
+                            android:paddingStart="@dimen/default_dimen_small"
+                            android:paddingEnd="@dimen/default_dimen_small"
+                            android:saveEnabled="false"
+                            android:selectAllOnFocus="true" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/container_rectangular_height_aspect"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="0dp"
+                            android:layout_height="?android:attr/listPreferredItemHeightSmall"
+                            android:layout_weight="1"
+                            android:ellipsize="end"
+                            android:gravity="center_vertical"
+                            android:labelFor="@id/edit_height"
+                            android:maxLines="1"
+                            android:paddingStart="@dimen/default_dimen_big"
+                            android:paddingEnd="@dimen/default_dimen_small"
+                            android:text="@string/height_aspect"
+                            android:textAppearance="?android:attr/textAppearanceListItem" />
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/edit_height"
+                            android:layout_width="@dimen/default_dimen_very_huge"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="end"
+                            android:layout_marginEnd="@dimen/default_dimen_big"
+                            android:gravity="center_vertical|end"
+                            android:imeOptions="actionDone"
+                            android:inputType="numberDecimal"
+                            android:lines="1"
+                            android:maxLines="1"
+                            android:paddingStart="@dimen/default_dimen_small"
+                            android:paddingEnd="@dimen/default_dimen_small"
+                            android:saveEnabled="false"
+                            android:selectAllOnFocus="true" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/container_rectangular_width_aspect"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="0dp"
+                            android:layout_height="?android:attr/listPreferredItemHeightSmall"
+                            android:layout_weight="1"
+                            android:ellipsize="end"
+                            android:gravity="center_vertical"
+                            android:labelFor="@id/edit_rectangular_width"
+                            android:maxLines="1"
+                            android:paddingStart="@dimen/default_dimen_big"
+                            android:paddingEnd="@dimen/default_dimen_small"
+                            android:text="@string/width_aspect"
+                            android:textAppearance="?android:attr/textAppearanceListItem" />
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/edit_rectangular_width"
+                            android:layout_width="@dimen/default_dimen_very_huge"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="end"
+                            android:layout_marginEnd="@dimen/default_dimen_big"
+                            android:gravity="center_vertical|end"
+                            android:imeOptions="actionDone"
+                            android:inputType="numberDecimal"
+                            android:lines="1"
+                            android:maxLines="1"
+                            android:paddingStart="@dimen/default_dimen_small"
+                            android:paddingEnd="@dimen/default_dimen_small"
+                            android:saveEnabled="false"
+                            android:selectAllOnFocus="true" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/container_rectangular_longer_dimension_aspect"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="0dp"
+                            android:layout_height="?android:attr/listPreferredItemHeightSmall"
+                            android:layout_weight="1"
+                            android:ellipsize="end"
+                            android:gravity="center_vertical"
+                            android:labelFor="@id/edit_rectangular_longer_dimension_aspect"
+                            android:maxLines="1"
+                            android:paddingStart="@dimen/default_dimen_big"
+                            android:paddingEnd="@dimen/default_dimen_small"
+                            android:text="@string/longer_dimension_aspect"
+                            android:textAppearance="?android:attr/textAppearanceListItem" />
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/edit_rectangular_longer_dimension_aspect"
+                            android:layout_width="@dimen/default_dimen_very_huge"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="end"
+                            android:layout_marginEnd="@dimen/default_dimen_big"
+                            android:gravity="center_vertical|end"
+                            android:imeOptions="actionDone"
+                            android:inputType="numberDecimal"
+                            android:lines="1"
+                            android:maxLines="1"
+                            android:paddingStart="@dimen/default_dimen_small"
+                            android:paddingEnd="@dimen/default_dimen_small"
+                            android:saveEnabled="false"
+                            android:selectAllOnFocus="true" />
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/card_laserline"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/default_dimen_mid_small"
+                android:layout_marginBottom="@dimen/default_dimen_mid_small"
+                android:background="@android:color/white"
+                app:cardCornerRadius="0dp"
+                app:cardElevation="@dimen/elevation_level_2">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/default_dimen_mid_small"
+                    android:layout_marginBottom="@dimen/default_dimen_mid_small"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:id="@+id/container_laserline_style"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="?android:attr/listPreferredItemHeightSmall"
+                            android:ellipsize="end"
+                            android:gravity="center_vertical"
+                            android:maxLines="1"
+                            android:paddingStart="@dimen/default_dimen_big"
+                            android:paddingEnd="@dimen/default_dimen_small"
+                            android:text="@string/style"
+                            android:textAppearance="?android:attr/textAppearanceListItem" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/text_laserline_style"
+                            android:layout_width="match_parent"
+                            android:layout_height="?android:attr/listPreferredItemHeightSmall"
+                            android:ellipsize="end"
+                            android:gravity="center_vertical|end"
+                            android:maxLines="1"
+                            android:paddingStart="@dimen/default_dimen_small"
+                            android:paddingEnd="@dimen/default_dimen_big"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                            tools:text="Legacy" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/container_laserline_width"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="?android:attr/listPreferredItemHeightSmall"
+                            android:ellipsize="end"
+                            android:gravity="center_vertical"
+                            android:maxLines="1"
+                            android:paddingStart="@dimen/default_dimen_big"
+                            android:paddingEnd="@dimen/default_dimen_small"
+                            android:text="@string/width"
+                            android:textAppearance="?android:attr/textAppearanceListItem" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/text_laserline_width"
+                            android:layout_width="match_parent"
+                            android:layout_height="?android:attr/listPreferredItemHeightSmall"
+                            android:ellipsize="end"
+                            android:gravity="center_vertical|end"
+                            android:maxLines="1"
+                            android:paddingStart="@dimen/default_dimen_small"
+                            android:paddingEnd="@dimen/default_dimen_big"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                            tools:text="0.00 (DIP)" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/container_enabled_color"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="?android:attr/listPreferredItemHeightSmall"
+                            android:ellipsize="end"
+                            android:gravity="center_vertical"
+                            android:maxLines="1"
+                            android:paddingStart="@dimen/default_dimen_big"
+                            android:paddingEnd="@dimen/default_dimen_small"
+                            android:text="@string/enabled_color"
+                            android:textAppearance="?android:attr/textAppearanceListItem" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/text_enabled_color"
+                            android:layout_width="match_parent"
+                            android:layout_height="?android:attr/listPreferredItemHeightSmall"
+                            android:ellipsize="end"
+                            android:gravity="center_vertical|end"
+                            android:maxLines="1"
+                            android:paddingStart="@dimen/default_dimen_small"
+                            android:paddingEnd="@dimen/default_dimen_big"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                            tools:text="Default" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/container_disabled_color"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="?android:attr/listPreferredItemHeightSmall"
+                            android:ellipsize="end"
+                            android:gravity="center_vertical"
+                            android:maxLines="1"
+                            android:paddingStart="@dimen/default_dimen_big"
+                            android:paddingEnd="@dimen/default_dimen_small"
+                            android:text="@string/disabled_color"
+                            android:textAppearance="?android:attr/textAppearanceListItem" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/text_disabled_color"
+                            android:layout_width="match_parent"
+                            android:layout_height="?android:attr/listPreferredItemHeightSmall"
+                            android:ellipsize="end"
+                            android:gravity="center_vertical|end"
+                            android:maxLines="1"
+                            android:paddingStart="@dimen/default_dimen_small"
+                            android:paddingEnd="@dimen/default_dimen_big"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                            tools:text="Default" />
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/card_aimer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/default_dimen_mid_small"
+                android:layout_marginBottom="@dimen/default_dimen_mid_small"
+                android:background="@android:color/white"
+                app:cardCornerRadius="0dp"
+                app:cardElevation="@dimen/elevation_level_2">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/default_dimen_mid_small"
+                    android:layout_marginBottom="@dimen/default_dimen_mid_small"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:id="@+id/container_aimer_frame_color"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="?android:attr/listPreferredItemHeightSmall"
+                            android:ellipsize="end"
+                            android:gravity="center_vertical"
+                            android:maxLines="1"
+                            android:paddingStart="@dimen/default_dimen_big"
+                            android:paddingEnd="@dimen/default_dimen_small"
+                            android:text="@string/frame_color"
+                            android:textAppearance="?android:attr/textAppearanceListItem" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/text_aimer_frame_color"
+                            android:layout_width="match_parent"
+                            android:layout_height="?android:attr/listPreferredItemHeightSmall"
+                            android:ellipsize="end"
+                            android:gravity="center_vertical|end"
+                            android:maxLines="1"
+                            android:paddingStart="@dimen/default_dimen_small"
+                            android:paddingEnd="@dimen/default_dimen_big"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                            tools:text="Default" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/container_aimer_dot_color"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="?android:attr/listPreferredItemHeightSmall"
+                            android:ellipsize="end"
+                            android:gravity="center_vertical"
+                            android:maxLines="1"
+                            android:paddingStart="@dimen/default_dimen_big"
+                            android:paddingEnd="@dimen/default_dimen_small"
+                            android:text="@string/dot_color"
+                            android:textAppearance="?android:attr/textAppearanceListItem" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/text_aimer_dot_color"
+                            android:layout_width="match_parent"
+                            android:layout_height="?android:attr/listPreferredItemHeightSmall"
+                            android:ellipsize="end"
+                            android:gravity="center_vertical|end"
+                            android:maxLines="1"
+                            android:paddingStart="@dimen/default_dimen_small"
+                            android:paddingEnd="@dimen/default_dimen_big"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                            tools:text="Default" />
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="ContainedButton" parent="Widget.MaterialComponents.Button">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/material_button_height</item>
+        <item name="android:padding">@dimen/default_dimen_mid_big</item>
+        <item name="android:layout_marginTop">@dimen/default_dimen_very_small</item>
+        <item name="android:layout_marginBottom">@dimen/default_dimen_mid_small</item>
+        <item name="android:layout_marginStart">@dimen/default_dimen_very_big</item>
+        <item name="android:layout_marginEnd">@dimen/default_dimen_very_big</item>
+        <item name="android:backgroundTint">@color/dark_btn_color_selector</item>
+        <item name="android:textColor">@color/dark_btn_content_color_selector</item>
+        <item name="android:textSize">@dimen/scalable_text_size_small</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textAppearance">@style/PrimaryButtonText</item>
+    </style>
+
+    <style name="PrimaryButtonText" parent="TextAppearance.MaterialComponents.Button" />
+
+    <style name="TitleText" parent="TextAppearance.MaterialComponents.Headline5">
+        <item name="android:textColor">@color/colorPrimary</item>
+    </style>
+
+    <style name="TitleText.Bold">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="RegularText" parent="TextAppearance.MaterialComponents.Body1" />
+    <style name="CaptionText" parent="TextAppearance.MaterialComponents.Caption" />
+
+    <style name="RegularText.Bold">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="SettingsCard" parent="Base.CardView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/default_dimen_mid_small</item>
+        <item name="android:background">@color/white</item>
+        <item name="cardCornerRadius">0dp</item>
+        <item name="cardElevation">@dimen/elevation_level_2</item>
+    </style>
+
+</resources>
