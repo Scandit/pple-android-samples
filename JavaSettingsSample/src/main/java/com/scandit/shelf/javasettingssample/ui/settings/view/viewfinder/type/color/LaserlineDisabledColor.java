@@ -40,8 +40,8 @@ public class LaserlineDisabledColor {
     static {
         LaserlineViewfinderStyle[] styles = LaserlineViewfinderStyle.values();
 
-        LaserlineDisabledColor blue = new LaserlineDisabledColor(new Color(0, 0, 255, 0), R.string.blue);
-        LaserlineDisabledColor red = new LaserlineDisabledColor(new Color(255, 0, 0, 0), R.string.red);
+        LaserlineDisabledColor blue = new LaserlineDisabledColor(new Color(0, 0, 255, 255), R.string.blue);
+        LaserlineDisabledColor red = new LaserlineDisabledColor(new Color(255, 0, 0, 255), R.string.red);
         LaserlineDisabledColor transparent = new LaserlineDisabledColor(Color.TRANSPARENT, R.string.transparent);
 
         for (LaserlineViewfinderStyle style : styles) {

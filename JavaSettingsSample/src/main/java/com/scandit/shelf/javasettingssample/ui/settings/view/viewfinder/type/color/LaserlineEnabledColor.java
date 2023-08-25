@@ -40,8 +40,8 @@ public class LaserlineEnabledColor {
     static {
         LaserlineViewfinderStyle[] styles = LaserlineViewfinderStyle.values();
 
-        LaserlineEnabledColor red = new LaserlineEnabledColor(new Color(255, 0, 0, 0), R.string.red);
-        LaserlineEnabledColor blue = new LaserlineEnabledColor(new Color(0, 0, 255, 0), R.string.blue);
+        LaserlineEnabledColor red = new LaserlineEnabledColor(new Color(255, 0, 0, 255), R.string.red);
+        LaserlineEnabledColor blue = new LaserlineEnabledColor(new Color(0, 0, 255, 255), R.string.blue);
         LaserlineEnabledColor white = new LaserlineEnabledColor(Color.WHITE, R.string.white);
 
         for (LaserlineViewfinderStyle style : styles) {

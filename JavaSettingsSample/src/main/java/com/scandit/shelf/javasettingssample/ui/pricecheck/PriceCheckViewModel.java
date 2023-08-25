@@ -27,9 +27,11 @@ import androidx.lifecycle.ViewModel;
 import com.scandit.shelf.javasettingssample.R;
 import com.scandit.shelf.javasettingssample.catalog.CatalogStore;
 import com.scandit.shelf.javasettingssample.repository.FeedbackRepository;
+import com.scandit.shelf.javasettingssample.repository.FlowRepository;
 import com.scandit.shelf.javasettingssample.repository.OverlayRepository;
 import com.scandit.shelf.javasettingssample.repository.ScanAreaRepository;
 import com.scandit.shelf.javasettingssample.repository.ViewfinderRepository;
+import com.scandit.shelf.sdk.catalog.Currency;
 import com.scandit.shelf.sdk.catalog.ProductCatalog;
 import com.scandit.shelf.sdk.common.CompletionHandler;
 import com.scandit.shelf.sdk.core.area.RectangularLocationSelection;
@@ -41,12 +43,16 @@ import com.scandit.shelf.sdk.core.feedback.Vibration;
 import com.scandit.shelf.sdk.core.ui.CaptureView;
 import com.scandit.shelf.sdk.core.ui.style.Brush;
 import com.scandit.shelf.sdk.core.ui.viewfinder.ViewfinderConfiguration;
+import com.scandit.shelf.sdk.price.FrameData;
 import com.scandit.shelf.sdk.price.PriceCheck;
 import com.scandit.shelf.sdk.price.PriceCheckListener;
 import com.scandit.shelf.sdk.price.PriceCheckResult;
+import com.scandit.shelf.sdk.price.PriceLabelSession;
 import com.scandit.shelf.sdk.price.ui.AdvancedPriceCheckOverlay;
 import com.scandit.shelf.sdk.price.ui.BasicPriceCheckOverlay;
 import com.scandit.shelf.sdk.price.ui.DefaultPriceCheckAdvancedOverlayListener;
+
+import java.util.Locale;
 
 import kotlin.Unit;
 
@@ -58,26 +64,45 @@ public class PriceCheckViewModel extends ViewModel implements PriceCheckListener
 
     private PriceCheck priceCheck = null;
 
-    private final MutableLiveData<PriceCheckResult> resultLiveData = new MutableLiveData<>();
+    private final FlowRepository flowSettings = FlowRepository.getCurrentSettings();
+    private final OverlayRepository overlaySettings = OverlayRepository.getCurrentSettings();
 
-    // Posts the price check result.
-    public LiveData<PriceCheckResult> getResult() {
-        return resultLiveData;
+    private final MutableLiveData<String> snackbarMessageLiveData = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> isNonContinuousFlowPausedLiveData = new MutableLiveData<>();
+    private final MutableLiveData<PriceLabelSession> sessionLiveData = new MutableLiveData<>();
+
+    // Posts the message to be displayed on a snackbar to the observing Fragment.
+    public LiveData<String> getSnackbarMessage() {
+        return snackbarMessageLiveData;
+    }
+
+    // Posts whether non-continuous price check flow is paused via LiveData to the observing Fragment.
+    public LiveData<Boolean> getIsNonContinuousFlowPaused() {
+        return isNonContinuousFlowPausedLiveData;
+    }
+
+    // Posts the PriceLabelSessions via LiveData to the observing Fragment.
+    public LiveData<PriceLabelSession> getSession() {
+        return sessionLiveData;
     }
 
     public void initPriceCheck(
             CaptureView view,
             Context context
     ) {
-        // Reset the price check result live data to null
-        resultLiveData.setValue(null);
+        // Reset the snackbar message live data to null.
+        snackbarMessageLiveData.setValue(null);
 
-        // Get the ProductCatalog object previously stored in CatalogStore
+        // Get the ProductCatalog object previously stored in CatalogStore.
         ProductCatalog catalog = CatalogStore.getInstance().getProductCatalog();
 
-        // Initialize the PriceCheck object
+        if (priceCheck != null) {
+            // Dispose previously used PriceCheck instance, to release some resources held by it.
+            priceCheck.dispose();
+        }
+        // Initialize the PriceCheck object.
         priceCheck = new PriceCheck(view, catalog);
-        // Set sound and vibration feedback for scanned labels
+        // Set sound and vibration feedback for scanned labels.
         priceCheck.setFeedback(createPriceCheckFeedback());
         priceCheck.addListener(this);
         setPriceCheckOverlays(context);
@@ -85,6 +110,9 @@ public class PriceCheckViewModel extends ViewModel implements PriceCheckListener
     }
 
     public void resumePriceCheck() {
+        if (!flowSettings.isContinuousFlowEnabled()) {
+            isNonContinuousFlowPausedLiveData.postValue(false);
+        }
         if (priceCheck != null) {
             priceCheck.enable(new CompletionHandler<Unit>() {
                 @Override
@@ -101,6 +129,9 @@ public class PriceCheckViewModel extends ViewModel implements PriceCheckListener
     }
 
     public void pausePriceCheck() {
+        if (!flowSettings.isContinuousFlowEnabled()) {
+            isNonContinuousFlowPausedLiveData.postValue(true);
+        }
         if (priceCheck != null) {
             priceCheck.disable(new CompletionHandler<Unit>() {
                 @Override
@@ -116,29 +147,67 @@ public class PriceCheckViewModel extends ViewModel implements PriceCheckListener
         }
     }
 
+    public boolean isCustomOverlayEnabled() {
+        return overlaySettings.isCustomOverlayEnabled();
+    }
+
     @Override
     public void onCorrectPrice(@NonNull PriceCheckResult priceCheckResult) {
-        // Handle result that a Product label was scanned with correct price
-        resultLiveData.postValue(priceCheckResult);
+        // Handle result that a Product label was scanned with correct price - in our case,
+        // we will pass a message to the Fragment, that should be displayed on a snackbar.
+        snackbarMessageLiveData.postValue(toMessage(priceCheckResult));
     }
 
     @Override
     public void onWrongPrice(@NonNull PriceCheckResult priceCheckResult) {
-        // Handle result that a Product label was scanned with wrong price
-        resultLiveData.postValue(priceCheckResult);
+        // Handle result that a Product label was scanned with wrong price - in our case,
+        // we will pass a message to the Fragment, that should be displayed on a snackbar.
+        snackbarMessageLiveData.postValue(toMessage(priceCheckResult));
     }
 
     @Override
     public void onUnknownProduct(@NonNull PriceCheckResult priceCheckResult) {
-        // Handle result that a Product label was scanned for an unknown Product
-        resultLiveData.postValue(priceCheckResult);
+        // Handle result that a Product label was scanned for an unknown Product - in our case,
+        // we will pass a message to the Fragment, that should be displayed on a snackbar.
+        snackbarMessageLiveData.postValue(toMessage(priceCheckResult));
+    }
+
+    @Override
+    public void onSessionUpdate(@NonNull PriceLabelSession session, @NonNull FrameData frameData) {
+        // Post the sessions to LiveData for CustomOverlayView used by the Fragment, if the overlay is enabled.
+        if (overlaySettings.isCustomOverlayEnabled()) {
+            sessionLiveData.postValue(session);
+        }
+
+        // Condition for pausing the price check process when continuous flow is disabled and a label has been captured.
+        if (!flowSettings.isContinuousFlowEnabled() && !session.getAddedLabels().isEmpty()) {
+            pausePriceCheck();
+        }
+    }
+
+    private String toMessage(PriceCheckResult result) {
+        if (result.getCorrectPrice() == null) {
+            return "Unrecognized product - captured price: " + priceFormat(result.getCapturedPrice());
+        } else if (result.getCapturedPrice() == result.getCorrectPrice()) {
+            return result.getName() + "\nCorrect Price: " + priceFormat(result.getCapturedPrice());
+        } else {
+            return result.getName() + "\nWrong Price: " + priceFormat(result.getCapturedPrice())
+                    + ", should be " + priceFormat(result.getCorrectPrice());
+        }
+    }
+
+    private String priceFormat(float price) {
+        Currency currency = CatalogStore.getInstance().getStore().getCurrency();
+        return String.format(
+                Locale.getDefault(),
+                currency.getSymbol() + "%." + currency.getDecimalPlaces() + "f", price
+        );
     }
 
     private void setPriceCheckOverlays(Context context) {
-        OverlayRepository overlaySettings = OverlayRepository.getCurrentSettings();
         if (overlaySettings.isBasicOverlayEnabled()) {
             // Add BasicPriceCheckOverlay that draw highlights on top of captured labels
-            BasicPriceCheckOverlay basicPriceCheckOverlay = createBasicPriceCheckOverlay(context, overlaySettings);
+            BasicPriceCheckOverlay basicPriceCheckOverlay = createBasicPriceCheckOverlay(context);
             priceCheck.addOverlay(basicPriceCheckOverlay);
         }
         if (overlaySettings.isAdvancedOverlayEnabled()) {
@@ -149,7 +218,7 @@ public class PriceCheckViewModel extends ViewModel implements PriceCheckListener
     }
 
     @NonNull
-    private BasicPriceCheckOverlay createBasicPriceCheckOverlay(Context context, OverlayRepository overlaySettings) {
+    private BasicPriceCheckOverlay createBasicPriceCheckOverlay(Context context) {
         return new BasicPriceCheckOverlay(
                 createBrush(context, overlaySettings.getCorrectPriceBrush().colorResource),
                 createBrush(context, overlaySettings.getWrongPriceBrush().colorResource),

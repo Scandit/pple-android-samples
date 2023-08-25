@@ -32,6 +32,7 @@ public class OverlayRepository {
     private OverlayBrush wrongPriceBrush = OverlayBrush.RED;
     private OverlayBrush unknownProductBrush = OverlayBrush.GREY;
     private boolean advancedOverlayEnabled = false;
+    private boolean customOverlayEnabled = false;
 
     public boolean isBasicOverlayEnabled() {
         return basicOverlayEnabled;
@@ -71,5 +72,13 @@ public class OverlayRepository {
 
     public void setAdvancedOverlayEnabled(boolean advancedOverlayEnabled) {
         this.advancedOverlayEnabled = advancedOverlayEnabled;
+    }
+
+    public boolean isCustomOverlayEnabled() {
+        return customOverlayEnabled;
+    }
+
+    public void setCustomOverlayEnabled(boolean customOverlayEnabled) {
+        this.customOverlayEnabled = customOverlayEnabled;
     }
 }

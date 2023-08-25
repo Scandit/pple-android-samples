@@ -30,6 +30,7 @@ import com.scandit.shelf.ShelfSdkVersion;
 import com.scandit.shelf.javasettingssample.R;
 import com.scandit.shelf.javasettingssample.ui.base.NavigationFragment;
 import com.scandit.shelf.javasettingssample.ui.settings.feedback.FeedbackFragment;
+import com.scandit.shelf.javasettingssample.ui.settings.flow.FlowFragment;
 import com.scandit.shelf.javasettingssample.ui.settings.view.ViewSettingsOverviewFragment;
 
 public class SettingsOverviewFragment extends NavigationFragment
@@ -86,6 +87,9 @@ public class SettingsOverviewFragment extends NavigationFragment
                 break;
             case VIEW:
                 moveToFragment(ViewSettingsOverviewFragment.newInstance(), true, null);
+                break;
+            case FLOW:
+                moveToFragment(FlowFragment.newInstance(), true, null);
                 break;
         }
     }

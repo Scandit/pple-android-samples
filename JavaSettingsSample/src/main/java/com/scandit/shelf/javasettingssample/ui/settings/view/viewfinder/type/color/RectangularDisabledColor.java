@@ -40,7 +40,7 @@ public class RectangularDisabledColor {
     static {
         RectangularViewfinderStyle[] styles = RectangularViewfinderStyle.values();
 
-        RectangularDisabledColor black = new RectangularDisabledColor(new Color(0, 0, 0, 0), R.string.black);
+        RectangularDisabledColor black = new RectangularDisabledColor(new Color(0, 0, 0, 255), R.string.black);
         RectangularDisabledColor white = new RectangularDisabledColor(Color.WHITE, R.string.white);
 
         for (RectangularViewfinderStyle style : styles) {

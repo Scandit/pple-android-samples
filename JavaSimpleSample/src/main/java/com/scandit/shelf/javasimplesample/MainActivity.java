@@ -106,15 +106,9 @@ public class MainActivity extends CameraPermissionActivity {
     }
 
     private void observeLiveData() {
-        viewModel.getResult().observe(this, result -> {
-            // Observe the LiveData that holds the status of the price check setup.
-            if (result.getCorrectPrice() == null) {
-                showMessage("Unrecognized product - captured price: " + result.getCapturedPrice());
-            } else if (result.getCorrectPrice() == result.getCapturedPrice()) {
-                showMessage(result.getName() + "\nCorrect Price: " + result.getCapturedPrice());
-            } else {
-                showMessage(result.getName() + "\nWrong Price: " + result.getCapturedPrice() + ", should be " + result.getCorrectPrice());
-            }
+        // Observe the LivaData that posts messages to be displayed on a snackbar.
+        viewModel.getSnackbarMessage().observe(this, message -> {
+            if (message != null) showMessage(message);
         });
 
         viewModel.getStatus().observe(this, newStatus -> {
@@ -141,7 +135,7 @@ public class MainActivity extends CameraPermissionActivity {
             }
         });
 
-        // Observe the LiveData that holds current store to set ActionBar title
+        // Observe the LiveData that holds current store to set ActionBar title.
         viewModel.getCurrentStore().observe(this, store -> getSupportActionBar().setTitle(store.getName()));
     }
 

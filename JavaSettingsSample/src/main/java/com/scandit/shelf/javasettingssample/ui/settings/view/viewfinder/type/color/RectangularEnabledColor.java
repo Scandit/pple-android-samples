@@ -40,8 +40,8 @@ public class RectangularEnabledColor {
     static {
         RectangularViewfinderStyle[] styles = RectangularViewfinderStyle.values();
 
-        RectangularEnabledColor blue = new RectangularEnabledColor(new Color(0, 0, 255, 0), R.string.blue);
-        RectangularEnabledColor black = new RectangularEnabledColor(new Color(0, 0, 0, 0), R.string.black);
+        RectangularEnabledColor blue = new RectangularEnabledColor(new Color(0, 0, 255, 255), R.string.blue);
+        RectangularEnabledColor black = new RectangularEnabledColor(new Color(0, 0, 0, 255), R.string.black);
 
         for (RectangularViewfinderStyle style : styles) {
             RectangularViewfinder viewfinder = new RectangularViewfinder(style);

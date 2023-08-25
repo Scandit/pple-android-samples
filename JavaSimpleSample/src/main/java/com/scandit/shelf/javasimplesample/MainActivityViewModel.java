@@ -21,17 +21,21 @@ import androidx.lifecycle.ViewModel;
 
 import com.scandit.shelf.sdk.authentication.Authentication;
 import com.scandit.shelf.sdk.catalog.Catalog;
+import com.scandit.shelf.sdk.catalog.Currency;
 import com.scandit.shelf.sdk.catalog.ProductCatalog;
 import com.scandit.shelf.sdk.catalog.Store;
 import com.scandit.shelf.sdk.common.CompletionHandler;
 import com.scandit.shelf.sdk.core.ui.CaptureView;
 import com.scandit.shelf.sdk.core.ui.viewfinder.ViewfinderConfiguration;
+import com.scandit.shelf.sdk.price.FrameData;
 import com.scandit.shelf.sdk.price.PriceCheck;
 import com.scandit.shelf.sdk.price.PriceCheckListener;
 import com.scandit.shelf.sdk.price.PriceCheckResult;
+import com.scandit.shelf.sdk.price.PriceLabelSession;
 import com.scandit.shelf.sdk.price.ui.PriceCheckOverlay;
 
 import java.util.List;
+import java.util.Locale;
 
 import kotlin.Unit;
 
@@ -47,7 +51,7 @@ public class MainActivityViewModel extends ViewModel implements PriceCheckListen
     private ProductCatalog catalog = null;
     private PriceCheck priceCheck = null;
 
-    private final MutableLiveData<PriceCheckResult> resultLiveData = new MutableLiveData<>();
+    private final MutableLiveData<String> snackbarMessageLiveData = new MutableLiveData<>();
     private final MutableLiveData<Status> statusLiveData = new MutableLiveData<>(Status.INIT);
     private final MutableLiveData<Store> currentStore = new MutableLiveData<>();
 
@@ -56,12 +60,12 @@ public class MainActivityViewModel extends ViewModel implements PriceCheckListen
         return statusLiveData;
     }
 
-    // Posts the price check result.
-    public LiveData<PriceCheckResult> getResult() {
-        return resultLiveData;
+    // Posts the message to the observing Fragment to be displayed on a snackbar.
+    public LiveData<String> getSnackbarMessage() {
+        return snackbarMessageLiveData;
     }
 
-    // Posts current selected store.
+    // Posts currently selected store.
     public LiveData<Store> getCurrentStore() {
         return currentStore;
     }
@@ -140,20 +144,28 @@ public class MainActivityViewModel extends ViewModel implements PriceCheckListen
 
     @Override
     public void onCorrectPrice(@NonNull PriceCheckResult priceCheckResult) {
-        // Handle result that a Product label was scanned with correct price
-        resultLiveData.postValue(priceCheckResult);
+        // Handle result that a Product label was scanned with correct price - in our case,
+        // we will pass a message to the Fragment, that should be displayed on a snackbar.
+        snackbarMessageLiveData.postValue(toMessage(priceCheckResult));
     }
 
     @Override
     public void onWrongPrice(@NonNull PriceCheckResult priceCheckResult) {
-        // Handle result that a Product label was scanned with wrong price
-        resultLiveData.postValue(priceCheckResult);
+        // Handle result that a Product label was scanned with wrong price - in our case,
+        // we will pass a message to the Fragment, that should be displayed on a snackbar.
+        snackbarMessageLiveData.postValue(toMessage(priceCheckResult));
     }
 
     @Override
     public void onUnknownProduct(@NonNull PriceCheckResult priceCheckResult) {
-        // Handle result that a Product label was scanned for an unknown Product
-        resultLiveData.postValue(priceCheckResult);
+        // Handle result that a Product label was scanned for an unknown Product - in our case,
+        // we will pass a message to the Fragment, that should be displayed on a snackbar.
+        snackbarMessageLiveData.postValue(toMessage(priceCheckResult));
+    }
+
+    @Override
+    public void onSessionUpdate(@NonNull PriceLabelSession session, @NonNull FrameData frameData) {
+        // Callback containing PriceLabelSession and FrameData.
     }
 
     public void authenticate() {
@@ -224,5 +236,24 @@ public class MainActivityViewModel extends ViewModel implements PriceCheckListen
                         statusLiveData.postValue(Status.CATALOG_DOWNLOAD_FAILED);
                     }
                 });
+    }
+
+    private String toMessage(PriceCheckResult result) {
+        if (result.getCorrectPrice() == null) {
+            return "Unrecognized product - captured price: " + priceFormat(result.getCapturedPrice());
+        } else if (result.getCapturedPrice() == result.getCorrectPrice()) {
+            return result.getName() + "\nCorrect Price: " + priceFormat(result.getCapturedPrice());
+        } else {
+            return result.getName() + "\nWrong Price: " + priceFormat(result.getCapturedPrice())
+                    + ", should be " + priceFormat(result.getCorrectPrice());
+        }
+    }
+
+    private String priceFormat(float price) {
+        Currency currency = currentStore.getValue().getCurrency();
+        return String.format(
+                Locale.getDefault(),
+                currency.getSymbol() + "%." + currency.getDecimalPlaces() + "f", price
+        );
     }
 }

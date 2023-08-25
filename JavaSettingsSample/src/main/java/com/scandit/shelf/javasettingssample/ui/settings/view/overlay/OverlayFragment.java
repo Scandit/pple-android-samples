@@ -70,6 +70,10 @@ public class OverlayFragment extends NavigationFragment {
         SwitchMaterial advancedOverlay = view.findViewById(R.id.enable_advanced_overlay);
         advancedOverlay.setChecked(viewModel.isAdvancedOverlayEnabled());
         advancedOverlay.setOnCheckedChangeListener((buttonView, isChecked) -> viewModel.setAdvancedOverlayEnabled(isChecked));
+
+        SwitchMaterial customOverlay = view.findViewById(R.id.enable_custom_overlay);
+        customOverlay.setChecked(viewModel.isCustomOverlayEnabled());
+        customOverlay.setOnCheckedChangeListener((buttonView, isChecked) -> viewModel.setCustomOverlayEnabled(isChecked));
     }
 
     private void setSpinners(View view) {

@@ -12,21 +12,25 @@
  * limitations under the License.
  */
 
-package com.scandit.shelf.javasettingssample.ui.settings;
+package com.scandit.shelf.javasettingssample.repository;
 
-import androidx.annotation.StringRes;
+public class FlowRepository {
 
-import com.scandit.shelf.javasettingssample.R;
+    private static final FlowRepository CURRENT = new FlowRepository();
 
-public enum SettingsOverviewEntry {
-    FEEDBACK(R.string.feedback_settings),
-    VIEW(R.string.view_settings),
-    FLOW(R.string.flow_settings);
+    public static FlowRepository getCurrentSettings() {
+        return CURRENT;
+    }
 
-    @StringRes
-    public final int displayNameResource;
+    private FlowRepository() {}
 
-    SettingsOverviewEntry(@StringRes int displayNameResource) {
-        this.displayNameResource = displayNameResource;
+    private boolean continuousFlowEnabled = true;
+
+    public boolean isContinuousFlowEnabled() {
+        return continuousFlowEnabled;
+    }
+
+    public void setContinuousFlowEnabled(boolean continuousFlowEnabled) {
+        this.continuousFlowEnabled = continuousFlowEnabled;
     }
 }

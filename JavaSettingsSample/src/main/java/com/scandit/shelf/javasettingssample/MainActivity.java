@@ -18,10 +18,10 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.scandit.shelf.sdk.authentication.Authentication;
 import com.scandit.shelf.javasettingssample.ui.base.NavigationFragment;
 import com.scandit.shelf.javasettingssample.ui.login.LoginFragment;
 import com.scandit.shelf.javasettingssample.ui.storeselection.StoreSelectionFragment;
+import com.scandit.shelf.sdk.authentication.Authentication;
 
 /**
  * The main Activity that hosts all Fragments in the sample app.

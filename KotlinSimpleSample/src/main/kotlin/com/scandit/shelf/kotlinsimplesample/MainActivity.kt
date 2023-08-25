@@ -32,7 +32,6 @@ import com.scandit.shelf.sdk.core.ui.CaptureView
 import com.scandit.shelf.sdk.core.ui.style.Brush
 import com.scandit.shelf.sdk.core.ui.viewfinder.RectangularViewfinder
 import com.scandit.shelf.sdk.core.ui.viewfinder.ViewfinderConfiguration
-import com.scandit.shelf.sdk.price.PriceCheckResult
 import com.scandit.shelf.sdk.price.ui.BasicPriceCheckOverlay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.filterNotNull
@@ -123,15 +122,15 @@ class MainActivity : CameraPermissionActivity() {
         }
 
         lifecycleScope.launch {
-            // Collect the Flow that emits price checking results.
-            viewModel.resultFlow.filterNotNull().collectLatest {
-                Snackbar.make(root, it.toMessage(), Snackbar.LENGTH_LONG).show()
+            // Collect the Flow that emits messages to be displayed on a snackbar.
+            viewModel.snackbarMessageFlow.filterNotNull().collectLatest {
+                Snackbar.make(root, it, Snackbar.LENGTH_LONG).show()
             }
         }
 
         lifecycleScope.launch {
-            // Collect the Flow that emits current store to set ActionBar title
-            viewModel.currentStore.filterNotNull().collectLatest {
+            // Collect the Flow that emits current store to set ActionBar title.
+            viewModel.currentStoreFlow.filterNotNull().collectLatest {
                 supportActionBar?.title = it.name
             }
         }
@@ -147,14 +146,6 @@ class MainActivity : CameraPermissionActivity() {
         status.setText(message)
     }
 }
-
-private fun PriceCheckResult.toMessage(): String = when (correctPrice) {
-    null -> "Unrecognized product - captured price: ${capturedPrice.priceFormat()}"
-    capturedPrice -> "$name\nCorrect Price: ${capturedPrice.priceFormat()}"
-    else -> "$name\nWrong Price: ${capturedPrice.priceFormat()}, should be ${correctPrice?.priceFormat()}"
-}
-
-fun Float.priceFormat(digits: Int = 2): String = "%.${digits}f".format(this)
 
 private fun solidBrush(@ColorInt color: Int): Brush = Brush(color, Color.TRANSPARENT, 0f)
 

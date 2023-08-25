@@ -15,14 +15,16 @@
 package com.scandit.shelf.javasettingssample.catalog;
 
 import com.scandit.shelf.sdk.catalog.ProductCatalog;
+import com.scandit.shelf.sdk.catalog.Store;
 
 /**
- * A singleton class that stores a ProductCatalog instance.
+ * A singleton class that stores a Store and a ProductCatalog instance for that Store.
  */
 public class CatalogStore {
 
     private static CatalogStore instance;
 
+    private Store store = null;
     private ProductCatalog catalog = null;
 
     private CatalogStore() {}
@@ -32,6 +34,14 @@ public class CatalogStore {
             instance = new CatalogStore();
         }
         return instance;
+    }
+
+    public Store getStore() {
+        return store;
+    }
+
+    public void setStore(Store store) {
+        this.store = store;
     }
 
     public ProductCatalog getProductCatalog() {

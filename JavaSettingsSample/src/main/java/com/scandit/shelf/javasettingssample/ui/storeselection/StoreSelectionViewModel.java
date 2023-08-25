@@ -72,9 +72,11 @@ public class StoreSelectionViewModel extends ViewModel {
     }
 
     public void initStoreSelection() {
-        // Initialize CatalogStore with a null ProductCatalog
+        // Initialize CatalogStore with a null ProductCatalog and a null Store.
         CatalogStore.getInstance().setProductCatalog(null);
-        // Set initial values to the LiveData that communicate with StoreSelectionFragment
+        CatalogStore.getInstance().setStore(null);
+
+        // Set initial values to the LiveData that communicate with StoreSelectionFragment.
         snackbarMessageLiveData.setValue(null);
         allStores.clear();
         storeListLiveData.setValue(allStores);
@@ -97,7 +99,7 @@ public class StoreSelectionViewModel extends ViewModel {
     }
 
     public void logout() {
-        // Use the Authentication singleton to log user out of organization
+        // Use the Authentication singleton to log user out of organization.
         Authentication.logout(new CompletionHandler<Unit>() {
             @Override
             public void success(Unit result) {
@@ -156,7 +158,7 @@ public class StoreSelectionViewModel extends ViewModel {
     }
 
     private void getProducts(Store store) {
-        // Get/Update the Product items for a given Store.
+        // Get/update the Product items for a given Store.
 
         // First create the ProductCatalog object.
         //
@@ -167,8 +169,10 @@ public class StoreSelectionViewModel extends ViewModel {
         // you should should pass your custom implementation of the ProductProvider interface, as the second argument
         // for the Catalog.getProductCatalog method - check the docs for more details.
         ProductCatalog catalog = Catalog.getProductCatalog(store);
-        // Store the ProductCatalog object to CatalogStore. We will need it for price check in PriceCheckViewModel.
+        // Save the ProductCatalog and the Store instances to CatalogStore.
+        // We will need them for price check in PriceCheckViewModel.
         CatalogStore.getInstance().setProductCatalog(catalog);
+        CatalogStore.getInstance().setStore(store);
         // Now we can update the list of Products by calling update() on ProductCatalog.
         catalog.update(
                 new CompletionHandler<Unit>() {

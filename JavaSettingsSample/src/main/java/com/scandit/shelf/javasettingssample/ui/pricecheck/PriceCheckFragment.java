@@ -14,8 +14,10 @@
 
 package com.scandit.shelf.javasettingssample.ui.pricecheck;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -26,11 +28,9 @@ import androidx.lifecycle.ViewModelProvider;
 import com.google.android.material.snackbar.Snackbar;
 import com.scandit.shelf.javasettingssample.R;
 import com.scandit.shelf.javasettingssample.ui.base.CameraPermissionFragment;
+import com.scandit.shelf.javasettingssample.ui.overlay.CustomOverlayView;
 import com.scandit.shelf.javasettingssample.ui.settings.SettingsOverviewFragment;
 import com.scandit.shelf.sdk.core.ui.CaptureView;
-import com.scandit.shelf.sdk.price.PriceCheckResult;
-
-import java.util.Locale;
 
 /**
  * Price checking of Product labels happen in this Fragment. It takes a Store object that was
@@ -52,6 +52,10 @@ public class PriceCheckFragment extends CameraPermissionFragment {
 
     private PriceCheckViewModel viewModel;
 
+    private View pausedOverlayView;
+    private CaptureView captureView;
+    private CustomOverlayView customOverlayView;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,6 +72,7 @@ public class PriceCheckFragment extends CameraPermissionFragment {
         return inflater.inflate(R.layout.price_check_fragment, container, false);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -81,7 +86,18 @@ public class PriceCheckFragment extends CameraPermissionFragment {
                 view1 -> moveToFragment(SettingsOverviewFragment.newInstance(), true, null)
         );
 
-        CaptureView captureView = rootView.findViewById(R.id.capture_view);
+        captureView = rootView.findViewById(R.id.capture_view);
+
+        pausedOverlayView = rootView.findViewById(R.id.paused_overlay_view);
+        pausedOverlayView.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_UP) {
+                viewModel.resumePriceCheck();
+            }
+            return true;
+        });
+
+        customOverlayView = rootView.findViewById(R.id.custom_overlay);
+        customOverlayView.setVisibility(viewModel.isCustomOverlayEnabled() ? View.VISIBLE : View.GONE);
 
         observeLiveData();
 
@@ -108,32 +124,24 @@ public class PriceCheckFragment extends CameraPermissionFragment {
     }
 
     private void observeLiveData() {
-        // Observe the LivaData that posts price checking results.
-        viewModel.getResult().observe(
-                getViewLifecycleOwner(),
-                priceCheckResult -> {
-                    if (priceCheckResult != null) showTopSnackbar(toMessage(priceCheckResult));
-                }
-        );
-    }
+        // Observe the LivaData that posts messages to be displayed on a snackbar.
+        viewModel.getSnackbarMessage().observe(getViewLifecycleOwner(), message -> {
+            if (message != null) showTopSnackbar(message);
+        });
 
-    private String toMessage(PriceCheckResult priceCheckResult) {
-        if (priceCheckResult.getCorrectPrice() == null) {
-            return "Unrecognized product - captured price: " + priceFormat(priceCheckResult.getCapturedPrice());
-        } else if (priceCheckResult.getCapturedPrice() == priceCheckResult.getCorrectPrice()) {
-            return priceCheckResult.getName() + "\nCorrect Price: " + priceFormat(priceCheckResult.getCapturedPrice());
-        } else {
-            return priceCheckResult.getName() + "\nWrong Price: " + priceFormat(priceCheckResult.getCapturedPrice())
-                    + ", should be " + priceFormat(priceCheckResult.getCorrectPrice());
-        }
+        // Observe the LivaData that posts information whether non-continuous price check flow is paused.
+        viewModel.getIsNonContinuousFlowPaused().observe(getViewLifecycleOwner(), isPaused -> {
+            if (isPaused != null) pausedOverlayView.setVisibility(isPaused ? View.VISIBLE : View.GONE);
+        });
+
+        // Observe the LivaData that posts PriceLabelSessions, which need to be passed to the custom overlay view.
+        viewModel.getSession().observe(getViewLifecycleOwner(), session -> {
+            customOverlayView.updateOverlay(session, captureView);
+        });
     }
 
     private void showTopSnackbar(String message) {
         View snackbar = rootView.findViewById(R.id.top_snackbar);
         Snackbar.make(snackbar, message, Snackbar.LENGTH_LONG).show();
-    }
-
-    private String priceFormat(float price) {
-        return String.format(Locale.getDefault(), "%.2f", price);
     }
 }

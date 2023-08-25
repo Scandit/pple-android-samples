@@ -22,9 +22,11 @@ import com.scandit.shelf.sdk.catalog.Store
 import com.scandit.shelf.sdk.common.CompletionHandler
 import com.scandit.shelf.sdk.core.ui.CaptureView
 import com.scandit.shelf.sdk.core.ui.viewfinder.ViewfinderConfiguration
+import com.scandit.shelf.sdk.price.FrameData
 import com.scandit.shelf.sdk.price.PriceCheck
 import com.scandit.shelf.sdk.price.PriceCheckListener
 import com.scandit.shelf.sdk.price.PriceCheckResult
+import com.scandit.shelf.sdk.price.PriceLabelSession
 import com.scandit.shelf.sdk.price.ui.PriceCheckOverlay
 import kotlinx.coroutines.flow.MutableStateFlow
 
@@ -39,8 +41,11 @@ class MainActivityViewModel : ViewModel(), PriceCheckListener {
     // Emits the status of the price check setup.
     val statusFlow: MutableStateFlow<Status> = MutableStateFlow(Status.Init)
 
-    // Emits the price check result.
-    val resultFlow: MutableStateFlow<PriceCheckResult?> = MutableStateFlow(null)
+    // Emits the message to the Fragment to be displayed on a snackbar.
+    val snackbarMessageFlow: MutableStateFlow<String?> = MutableStateFlow(null)
+
+    // Emits the currently selected store.
+    val currentStoreFlow: MutableStateFlow<Store?> = MutableStateFlow(null)
 
     // Perform the initial steps required for the price checking process, including:
     // - ShelfView authentication,
@@ -108,18 +113,23 @@ class MainActivityViewModel : ViewModel(), PriceCheckListener {
     }
 
     override fun onCorrectPrice(priceCheckResult: PriceCheckResult) {
-        // Handle result that a Product label was scanned with correct price
-        resultFlow.tryEmit(priceCheckResult)
+        // Handle result that a Product label was scanned with correct price - in our case,
+        // we will pass a message to the Fragment, that should be displayed on a snackbar.
+        snackbarMessageFlow.tryEmit(priceCheckResult.toMessage())
     }
 
     override fun onWrongPrice(priceCheckResult: PriceCheckResult) {
         // Handle result that a Product label was scanned with wrong price
-        resultFlow.tryEmit(priceCheckResult)
+        snackbarMessageFlow.tryEmit(priceCheckResult.toMessage())
     }
 
     override fun onUnknownProduct(priceCheckResult: PriceCheckResult) {
         // Handle result that a Product label was scanned for an unknown Product
-        resultFlow.tryEmit(priceCheckResult)
+        snackbarMessageFlow.tryEmit(priceCheckResult.toMessage())
+    }
+
+    override fun onSessionUpdate(session: PriceLabelSession, frameData: FrameData) {
+        // Callback containing PriceLabelSession and FrameData.
     }
 
     private fun authenticate() {
@@ -150,7 +160,9 @@ class MainActivityViewModel : ViewModel(), PriceCheckListener {
                     } else {
                         // Get products for a selected store from your organization.
                         // For simplicity reasons, below we select the first store on the list.
-                        getProducts(result[0])
+                        val store = result[0]
+                        currentStoreFlow.tryEmit(store)
+                        getProducts(store)
                     }
                 }
 
@@ -181,6 +193,17 @@ class MainActivityViewModel : ViewModel(), PriceCheckListener {
                 }
             )
         }
+    }
+
+    private fun PriceCheckResult.toMessage(): String = when (correctPrice) {
+        null -> "Unrecognized product - captured price: ${capturedPrice.priceFormat()}"
+        capturedPrice -> "$name\nCorrect Price: ${capturedPrice.priceFormat()}"
+        else -> "$name\nWrong Price: ${capturedPrice.priceFormat()}, should be ${correctPrice?.priceFormat()}"
+    }
+
+    private fun Float.priceFormat(): String {
+        val currency = currentStoreFlow.value?.currency ?: return ""
+        return "${currency.symbol}%.${currency.decimalPlaces}f".format(this)
     }
 
     private companion object {

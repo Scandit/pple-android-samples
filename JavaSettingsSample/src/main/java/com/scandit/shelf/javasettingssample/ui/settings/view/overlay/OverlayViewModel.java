@@ -38,6 +38,14 @@ public class OverlayViewModel extends ViewModel {
         currentSettings.setAdvancedOverlayEnabled(advancedOverlayEnabled);
     }
 
+    public boolean isCustomOverlayEnabled() {
+        return currentSettings.isCustomOverlayEnabled();
+    }
+
+    public void setCustomOverlayEnabled(boolean customOverlayEnabled) {
+        currentSettings.setCustomOverlayEnabled(customOverlayEnabled);
+    }
+
     public OverlayBrush getCorrectPriceBrush() {
         return currentSettings.getCorrectPriceBrush();
     }
