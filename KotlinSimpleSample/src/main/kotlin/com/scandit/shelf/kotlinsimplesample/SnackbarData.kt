@@ -12,11 +12,12 @@
  * limitations under the License.
  */
 
-package com.scandit.shelf.javasimplesample;
+package com.scandit.shelf.kotlinsimplesample
 
 /**
- * Enum class representing status of the price check setup.
+ * Simple data class holding data about the snackbar that should be displayed on the screen.
  */
-public enum Status {
-    INIT, AUTH_FAILED, STORE_DOWNLOAD_FAILED, STORES_EMPTY, CATALOG_DOWNLOAD_FAILED, READY
-}
+data class SnackbarData(
+    val message: String,
+    val backgroundColorResId: Int
+)

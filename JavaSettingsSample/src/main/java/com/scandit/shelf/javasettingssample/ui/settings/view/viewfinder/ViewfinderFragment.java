@@ -133,7 +133,7 @@ public class ViewfinderFragment extends NavigationFragment
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        setUpToolbar(rootView.findViewById(R.id.toolbar), getString(R.string.viewfinder_settings), true);
+        setUpToolbar(root.findViewById(R.id.toolbar), getString(R.string.viewfinder_settings), true);
 
         recyclerViewfinderTypes = view.findViewById(R.id.recycler_viewfinder_types);
         setupRecyclerTypes();

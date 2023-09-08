@@ -18,4 +18,18 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Status" />
 
+    <FrameLayout
+        android:id="@+id/capture_view_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/top_snackbar"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/default_dimen_very_huge"
+        android:layout_margin="@dimen/default_dimen_mid_big"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

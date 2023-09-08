@@ -63,9 +63,9 @@ public class ViewSettingsOverviewFragment extends NavigationFragment
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        setUpToolbar(rootView.findViewById(R.id.toolbar), getString(R.string.view_settings), true);
+        setUpToolbar(root.findViewById(R.id.toolbar), getString(R.string.view_settings), true);
 
-        MaterialTextView versionTextView = rootView.findViewById(R.id.sdk_version);
+        MaterialTextView versionTextView = root.findViewById(R.id.sdk_version);
         versionTextView.setText(ShelfSdkVersion.VERSION_STRING);
 
         RecyclerView recyclerOverviewOptions = view.findViewById(R.id.recycler_overview);

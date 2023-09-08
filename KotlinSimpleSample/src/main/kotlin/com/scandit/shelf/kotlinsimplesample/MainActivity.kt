@@ -14,13 +14,11 @@
 
 package com.scandit.shelf.kotlinsimplesample
 
-import android.content.Context
-import android.graphics.Color
 import android.os.Bundle
 import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import android.widget.FrameLayout
 import android.widget.TextView
-import androidx.annotation.ColorInt
-import androidx.annotation.ColorRes
 import androidx.annotation.StringRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
@@ -28,11 +26,19 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
 import com.scandit.shelf.kotlinsimplesample.base.CameraPermissionActivity
+import com.scandit.shelf.sdk.core.area.LocationSelection
+import com.scandit.shelf.sdk.core.area.RectangularLocationSelection
+import com.scandit.shelf.sdk.core.common.geometry.FloatWithUnit
+import com.scandit.shelf.sdk.core.common.geometry.MeasureUnit
+import com.scandit.shelf.sdk.core.common.geometry.SizeWithUnit
 import com.scandit.shelf.sdk.core.ui.CaptureView
-import com.scandit.shelf.sdk.core.ui.style.Brush
 import com.scandit.shelf.sdk.core.ui.viewfinder.RectangularViewfinder
+import com.scandit.shelf.sdk.core.ui.viewfinder.RectangularViewfinderStyle
+import com.scandit.shelf.sdk.core.ui.viewfinder.Viewfinder
 import com.scandit.shelf.sdk.core.ui.viewfinder.ViewfinderConfiguration
-import com.scandit.shelf.sdk.price.ui.BasicPriceCheckOverlay
+import com.scandit.shelf.sdk.price.ui.AdvancedPriceCheckOverlay
+import com.scandit.shelf.sdk.price.ui.DefaultPriceCheckAdvancedOverlayListener
+import com.scandit.shelf.sdk.price.ui.PriceCheckOverlay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
@@ -45,15 +51,20 @@ class MainActivity : CameraPermissionActivity() {
 
     private lateinit var viewModel: MainActivityViewModel
     private lateinit var root: ConstraintLayout
+    private lateinit var captureViewContainer: FrameLayout
     private lateinit var status: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this)[MainActivityViewModel::class.java]
+
         setContentView(R.layout.main_activity)
         root = findViewById(R.id.container)
+        captureViewContainer = findViewById(R.id.capture_view_container)
         status = findViewById(R.id.status_text_view)
+
         collectFlows()
+
         viewModel.authenticateAndFetchData()
     }
 
@@ -78,23 +89,12 @@ class MainActivity : CameraPermissionActivity() {
     override fun onCameraPermissionGranted() {
         // As price check requires the camera feed, it can only be started once the camera
         // permission has been granted.
+        // Additionally, CaptureView instance should only be created, after ProductCatalog.update()
+        // method is called, which fetches the necessary config fot CaptureView.
         val captureView = CaptureView(this)
-        root.addView(
-            captureView, ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT
-            )
-        )
-        viewModel.initPriceCheck(
-            captureView,
-            BasicPriceCheckOverlay(
-                correctPriceBrush = solidBrush(this, R.color.transparentGreen),
-                wrongPriceBrush = solidBrush(this, R.color.transparentRed),
-                unknownProductBrush = solidBrush(this, R.color.transparentGrey),
-            ),
-            ViewfinderConfiguration(RectangularViewfinder(), null)
-        )
+        captureViewContainer.addView(captureView, ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT))
 
+        viewModel.initPriceCheck(captureView, getDefaultOverlay(), getDefaultViewfinderConfiguration())
         viewModel.resumePriceCheck()
     }
 
@@ -106,6 +106,31 @@ class MainActivity : CameraPermissionActivity() {
         setStatus(R.string.camera_permission_denied)
     }
 
+    private fun getDefaultOverlay(): PriceCheckOverlay =
+        AdvancedPriceCheckOverlay(DefaultPriceCheckAdvancedOverlayListener())
+
+    private fun getDefaultViewfinderConfiguration(): ViewfinderConfiguration =
+        ViewfinderConfiguration(getDefaultViewfinder(), getDefaultLocationSelection())
+
+    private fun getDefaultViewfinder(): Viewfinder =
+        RectangularViewfinder(RectangularViewfinderStyle.ROUNDED).apply {
+            setSize(
+                SizeWithUnit(
+                    FloatWithUnit(0.9f, MeasureUnit.FRACTION),
+                    FloatWithUnit(0.3f, MeasureUnit.FRACTION)
+                )
+            )
+            dimming = 0.6f
+        }
+
+    private fun getDefaultLocationSelection(): LocationSelection =
+        RectangularLocationSelection.withSize(
+            SizeWithUnit(
+                FloatWithUnit(0.9f, MeasureUnit.FRACTION),
+                FloatWithUnit(0.3f, MeasureUnit.FRACTION)
+            )
+        )
+
     private fun collectFlows() {
         lifecycleScope.launch {
             // Collect the Flow that emits the status of the price check setup.
@@ -116,16 +141,14 @@ class MainActivity : CameraPermissionActivity() {
                     Status.AUTH_FAILED -> setStatus(R.string.authentication_failed)
                     Status.STORE_DOWNLOAD_FAILED -> setStatus(R.string.store_download_failed)
                     Status.STORES_EMPTY -> setStatus(R.string.stores_empty)
-                    Status.CATALOG_DOWNLOAD_FAILED -> setStatus(R.string.catalog_download_Failed)
+                    Status.CATALOG_UPDATE_FAILED -> setStatus(R.string.catalog_update_failed)
                 }
             }
         }
 
         lifecycleScope.launch {
             // Collect the Flow that emits messages to be displayed on a snackbar.
-            viewModel.snackbarMessageFlow.filterNotNull().collectLatest {
-                Snackbar.make(root, it, Snackbar.LENGTH_LONG).show()
-            }
+            viewModel.snackbarFlow.filterNotNull().collectLatest { showMessage(it) }
         }
 
         lifecycleScope.launch {
@@ -142,12 +165,15 @@ class MainActivity : CameraPermissionActivity() {
         requestCameraPermission()
     }
 
+    private fun showMessage(snackbarData: SnackbarData) {
+        Snackbar.make(root.findViewById(R.id.top_snackbar), snackbarData.message, Snackbar.LENGTH_LONG).apply {
+            setBackgroundTint(ContextCompat.getColor(this@MainActivity, snackbarData.backgroundColorResId))
+            view.findViewById<TextView>(com.google.android.material.R.id.snackbar_text).maxLines = 3
+            show()
+        }
+    }
+
     private fun setStatus(@StringRes message: Int) {
         status.setText(message)
     }
 }
-
-private fun solidBrush(@ColorInt color: Int): Brush = Brush(color, Color.TRANSPARENT, 0f)
-
-private fun solidBrush(context: Context, @ColorRes color: Int): Brush =
-    solidBrush(ContextCompat.getColor(context, color))

@@ -16,12 +16,12 @@ package com.scandit.shelf.javasimplesample;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 
-import android.graphics.Color;
 import android.os.Bundle;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import androidx.annotation.ColorRes;
 import androidx.annotation.StringRes;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
@@ -29,11 +29,19 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.scandit.shelf.javasimplesample.base.CameraPermissionActivity;
+import com.scandit.shelf.sdk.core.area.LocationSelection;
+import com.scandit.shelf.sdk.core.area.RectangularLocationSelection;
+import com.scandit.shelf.sdk.core.common.geometry.FloatWithUnit;
+import com.scandit.shelf.sdk.core.common.geometry.MeasureUnit;
+import com.scandit.shelf.sdk.core.common.geometry.SizeWithUnit;
 import com.scandit.shelf.sdk.core.ui.CaptureView;
-import com.scandit.shelf.sdk.core.ui.style.Brush;
 import com.scandit.shelf.sdk.core.ui.viewfinder.RectangularViewfinder;
+import com.scandit.shelf.sdk.core.ui.viewfinder.RectangularViewfinderStyle;
+import com.scandit.shelf.sdk.core.ui.viewfinder.Viewfinder;
 import com.scandit.shelf.sdk.core.ui.viewfinder.ViewfinderConfiguration;
-import com.scandit.shelf.sdk.price.ui.BasicPriceCheckOverlay;
+import com.scandit.shelf.sdk.price.ui.AdvancedPriceCheckOverlay;
+import com.scandit.shelf.sdk.price.ui.DefaultPriceCheckAdvancedOverlayListener;
+import com.scandit.shelf.sdk.price.ui.PriceCheckOverlay;
 
 /**
  * The main Activity that will setup a CaptureView and run price check.
@@ -43,6 +51,7 @@ public class MainActivity extends CameraPermissionActivity {
 
     private MainActivityViewModel viewModel;
     private ConstraintLayout root;
+    private FrameLayout captureViewContainer;
     private TextView status;
 
     @Override
@@ -51,6 +60,7 @@ public class MainActivity extends CameraPermissionActivity {
         viewModel = (new ViewModelProvider(this)).get(MainActivityViewModel.class);
         setContentView(R.layout.main_activity);
         root = findViewById(R.id.container);
+        captureViewContainer = findViewById(R.id.capture_view_container);
         status = findViewById(R.id.status_text_view);
         observeLiveData();
         viewModel.authenticateAndFetchData();
@@ -81,18 +91,12 @@ public class MainActivity extends CameraPermissionActivity {
     public void onCameraPermissionGranted() {
         // As price check requires the camera feed, it can only be started once the camera
         // permission has been granted.
+        // Additionally, CaptureView instance should only be created, after ProductCatalog.update()
+        // method is called, which fetches the necessary config fot CaptureView.
         CaptureView captureView = new CaptureView(this);
-        root.addView(captureView, new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
-        viewModel.initPriceCheck(
-                captureView,
-                new BasicPriceCheckOverlay(
-                        solidBrush(R.color.transparentGreen),
-                        solidBrush(R.color.transparentRed),
-                        solidBrush(R.color.transparentGrey)
-                ),
-                new ViewfinderConfiguration(new RectangularViewfinder(), null)
-        );
+        captureViewContainer.addView(captureView, new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
 
+        viewModel.initPriceCheck(captureView, getDefaultOverlay(), getDefaultViewfinderConfiguration());
         viewModel.resumePriceCheck();
     }
 
@@ -105,10 +109,39 @@ public class MainActivity extends CameraPermissionActivity {
         setStatus(R.string.camera_permission_denied);
     }
 
+    private PriceCheckOverlay getDefaultOverlay() {
+        return new AdvancedPriceCheckOverlay(new DefaultPriceCheckAdvancedOverlayListener());
+    }
+
+    private ViewfinderConfiguration getDefaultViewfinderConfiguration() {
+        return new ViewfinderConfiguration(getDefaultViewfinder(), getDefaultLocationSelection());
+    }
+
+    private Viewfinder getDefaultViewfinder() {
+        RectangularViewfinder viewfinder = new RectangularViewfinder(RectangularViewfinderStyle.ROUNDED);
+        viewfinder.setSize(
+                new SizeWithUnit(
+                        new FloatWithUnit(0.9f, MeasureUnit.FRACTION),
+                        new FloatWithUnit(0.3f, MeasureUnit.FRACTION)
+                )
+        );
+        viewfinder.setDimming(0.6f);
+        return viewfinder;
+    }
+
+    private LocationSelection getDefaultLocationSelection() {
+        return RectangularLocationSelection.withSize(
+                new SizeWithUnit(
+                        new FloatWithUnit(0.9f, MeasureUnit.FRACTION),
+                        new FloatWithUnit(0.3f, MeasureUnit.FRACTION)
+                )
+        );
+    }
+
     private void observeLiveData() {
         // Observe the LivaData that posts messages to be displayed on a snackbar.
-        viewModel.getSnackbarMessage().observe(this, message -> {
-            if (message != null) showMessage(message);
+        viewModel.getSnackbarData().observe(this, snackbarData -> {
+            if (snackbarData != null) showMessage(snackbarData);
         });
 
         viewModel.getStatus().observe(this, newStatus -> {
@@ -130,7 +163,7 @@ public class MainActivity extends CameraPermissionActivity {
                     setStatus(R.string.stores_empty);
                     break;
                 case CATALOG_DOWNLOAD_FAILED:
-                    setStatus(R.string.catalog_download_Failed);
+                    setStatus(R.string.catalog_update_failed);
                     break;
             }
         });
@@ -145,15 +178,17 @@ public class MainActivity extends CameraPermissionActivity {
         requestCameraPermission();
     }
 
-    private void showMessage(String message) {
-        Snackbar.make(root, message, Snackbar.LENGTH_LONG).show();
+    private void showMessage(SnackbarData snackbarData) {
+        View topSnackbar = root.findViewById(R.id.top_snackbar);
+        Snackbar snackbar = Snackbar.make(topSnackbar, snackbarData.getMessage(), Snackbar.LENGTH_LONG);
+        snackbar.setBackgroundTint(ContextCompat.getColor(this, snackbarData.getBackgroundColorResId()));
+        View snackbarView = snackbar.getView();
+        TextView textView = (TextView) snackbarView.findViewById(com.google.android.material.R.id.snackbar_text);
+        textView.setMaxLines(3);
+        snackbar.show();
     }
 
     private void setStatus(@StringRes int message) {
         status.setText(message);
-    }
-
-    private Brush solidBrush(@ColorRes int color) {
-        return new Brush(ContextCompat.getColor(this, color), Color.TRANSPARENT, 0f);
     }
 }

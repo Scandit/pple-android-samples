@@ -43,7 +43,7 @@ public class ViewfinderLaserlineWidthMeasureFragment extends MeasureUnitFragment
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        setUpToolbar(rootView.findViewById(R.id.toolbar), getString(R.string.width), true);
+        setUpToolbar(root.findViewById(R.id.toolbar), getString(R.string.width), true);
     }
 
     @Override

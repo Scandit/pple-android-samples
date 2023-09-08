@@ -67,13 +67,13 @@ public class PriceCheckViewModel extends ViewModel implements PriceCheckListener
     private final FlowRepository flowSettings = FlowRepository.getCurrentSettings();
     private final OverlayRepository overlaySettings = OverlayRepository.getCurrentSettings();
 
-    private final MutableLiveData<String> snackbarMessageLiveData = new MutableLiveData<>();
+    private final MutableLiveData<SnackbarData> snackbarLiveData = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isNonContinuousFlowPausedLiveData = new MutableLiveData<>();
     private final MutableLiveData<PriceLabelSession> sessionLiveData = new MutableLiveData<>();
 
     // Posts the message to be displayed on a snackbar to the observing Fragment.
-    public LiveData<String> getSnackbarMessage() {
-        return snackbarMessageLiveData;
+    public LiveData<SnackbarData> getSnackbarData() {
+        return snackbarLiveData;
     }
 
     // Posts whether non-continuous price check flow is paused via LiveData to the observing Fragment.
@@ -90,8 +90,8 @@ public class PriceCheckViewModel extends ViewModel implements PriceCheckListener
             CaptureView view,
             Context context
     ) {
-        // Reset the snackbar message live data to null.
-        snackbarMessageLiveData.setValue(null);
+        // Reset the snackbar live data to null.
+        snackbarLiveData.setValue(null);
 
         // Get the ProductCatalog object previously stored in CatalogStore.
         ProductCatalog catalog = CatalogStore.getInstance().getProductCatalog();
@@ -154,22 +154,22 @@ public class PriceCheckViewModel extends ViewModel implements PriceCheckListener
     @Override
     public void onCorrectPrice(@NonNull PriceCheckResult priceCheckResult) {
         // Handle result that a Product label was scanned with correct price - in our case,
-        // we will pass a message to the Fragment, that should be displayed on a snackbar.
-        snackbarMessageLiveData.postValue(toMessage(priceCheckResult));
+        // we will pass details of a snackbar to the Fragment to be displayed on a screen.
+        snackbarLiveData.postValue(new SnackbarData(toMessage(priceCheckResult), R.color.transparentGreen));
     }
 
     @Override
     public void onWrongPrice(@NonNull PriceCheckResult priceCheckResult) {
         // Handle result that a Product label was scanned with wrong price - in our case,
-        // we will pass a message to the Fragment, that should be displayed on a snackbar.
-        snackbarMessageLiveData.postValue(toMessage(priceCheckResult));
+        // we will pass details of a snackbar to the Fragment to be displayed on a screen.
+        snackbarLiveData.postValue(new SnackbarData(toMessage(priceCheckResult), R.color.transparentRed));
     }
 
     @Override
     public void onUnknownProduct(@NonNull PriceCheckResult priceCheckResult) {
         // Handle result that a Product label was scanned for an unknown Product - in our case,
-        // we will pass a message to the Fragment, that should be displayed on a snackbar.
-        snackbarMessageLiveData.postValue(toMessage(priceCheckResult));
+        // we will pass details of a snackbar to the Fragment to be displayed on a screen.
+        snackbarLiveData.postValue(new SnackbarData(toMessage(priceCheckResult), R.color.transparentGrey));
     }
 
     @Override

@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">Kotlin PPLE External Catalog Sample</string>
-    <string name="camera_permission_denied">Price Check requires access to the camera.</string>
+    <string name="init">Preparing to launch Price Check</string>
+    <string name="camera_permission_denied">Price Check requires access to the camera</string>
+    <string name="authentication_failed">Failed to authenticate</string>
+    <string name="store_download_failed">Failed to fetch the stores</string>
+    <string name="stores_empty">Organization has no stores</string>
+    <string name="catalog_update_failed">Failed to fetch the config for the store</string>
 </resources>

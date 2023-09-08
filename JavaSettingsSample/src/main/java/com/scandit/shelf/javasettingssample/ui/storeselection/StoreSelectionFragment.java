@@ -74,10 +74,10 @@ public class StoreSelectionFragment extends NavigationFragment implements SwipeR
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        swipeRefreshLayout = rootView.findViewById(R.id.swipe_layout);
+        swipeRefreshLayout = root.findViewById(R.id.swipe_layout);
         swipeRefreshLayout.setOnRefreshListener(this);
 
-        rootView.findViewById(R.id.logout_button).setOnClickListener(view1 -> viewModel.logout());
+        root.findViewById(R.id.logout_button).setOnClickListener(view1 -> viewModel.logout());
 
         setupSearchView();
 
@@ -91,7 +91,7 @@ public class StoreSelectionFragment extends NavigationFragment implements SwipeR
     }
 
     private void setupSearchView() {
-        searchView = rootView.findViewById(R.id.search_view);
+        searchView = root.findViewById(R.id.search_view);
         searchView.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -114,7 +114,7 @@ public class StoreSelectionFragment extends NavigationFragment implements SwipeR
         MutableLiveData<Store> selectedStoreLiveData = new MutableLiveData<>(null);
         StoresAdapter storesAdapter = new StoresAdapter(getViewLifecycleOwner(), selectedStoreLiveData);
 
-        RecyclerView storesRecyclerView = rootView.findViewById(R.id.stores);
+        RecyclerView storesRecyclerView = root.findViewById(R.id.stores);
         storesRecyclerView.setHasFixedSize(false);
         storesRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         storesRecyclerView.setAdapter(storesAdapter);

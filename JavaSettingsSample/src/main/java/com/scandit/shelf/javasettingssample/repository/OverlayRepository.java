@@ -27,11 +27,11 @@ public class OverlayRepository {
     private OverlayRepository() {
     }
 
-    private boolean basicOverlayEnabled = true;
+    private boolean basicOverlayEnabled = false;
     private OverlayBrush correctPriceBrush = OverlayBrush.GREEN;
     private OverlayBrush wrongPriceBrush = OverlayBrush.RED;
     private OverlayBrush unknownProductBrush = OverlayBrush.GREY;
-    private boolean advancedOverlayEnabled = false;
+    private boolean advancedOverlayEnabled = true;
     private boolean customOverlayEnabled = false;
 
     public boolean isBasicOverlayEnabled() {

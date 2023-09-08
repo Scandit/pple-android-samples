@@ -120,7 +120,7 @@ public class StoreSelectionViewModel extends ViewModel {
     }
 
     private void getStores() {
-        // Get/Update the list of stores by using the Catalog singleton object of the PPLE SDK.
+        // Get/update the list of stores by using the Catalog singleton object of the PPLE SDK.
         // Pass a CompletionHandler to the getStores method for handling API result.
         Catalog.getStores(new CompletionHandler<List<Store>>() {
             @Override
@@ -161,10 +161,10 @@ public class StoreSelectionViewModel extends ViewModel {
         // Get/update the Product items for a given Store.
 
         // First create the ProductCatalog object.
-        //
+
         // If you are using the ShelfView backend as your product catalog provider, you only need to specify the Store,
         // for which you will perform the Price Check - just like in the code below.
-        //
+
         // If on the other hand, you would like to use a different source of data for the ProductCatalog,
         // you should should pass your custom implementation of the ProductProvider interface, as the second argument
         // for the Catalog.getProductCatalog method - check the docs for more details.

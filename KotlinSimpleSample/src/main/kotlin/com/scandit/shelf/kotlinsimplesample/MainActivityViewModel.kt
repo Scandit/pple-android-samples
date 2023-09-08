@@ -41,8 +41,8 @@ class MainActivityViewModel : ViewModel(), PriceCheckListener {
     // Emits the status of the price check setup.
     val statusFlow: MutableStateFlow<Status> = MutableStateFlow(Status.INIT)
 
-    // Emits the message to the Fragment to be displayed on a snackbar.
-    val snackbarMessageFlow: MutableStateFlow<String?> = MutableStateFlow(null)
+    // Emits the snackbar data to be displayed on the screen.
+    val snackbarFlow: MutableStateFlow<SnackbarData?> = MutableStateFlow(null)
 
     // Emits the currently selected store.
     val currentStoreFlow: MutableStateFlow<Store?> = MutableStateFlow(null)
@@ -66,9 +66,7 @@ class MainActivityViewModel : ViewModel(), PriceCheckListener {
             // Initialize the PriceCheck object
             priceCheck = PriceCheck(view, it).apply {
                 addListener(this@MainActivityViewModel)
-                // Add a PriceCheckOverlay created in MainActivity.
-                // By default, price labels are sought on the whole capture view. If you want to limit the scan area,
-                // pass a non-null LocationSelection to PriceCheckOverlay's constructor.
+                // Add a PriceCheckOverlay and set the viewfinder configuration for a better user experience.
                 addOverlay(overlay)
                 setViewfinderConfiguration(viewfinderConfiguration)
             }
@@ -114,20 +112,20 @@ class MainActivityViewModel : ViewModel(), PriceCheckListener {
 
     override fun onCorrectPrice(priceCheckResult: PriceCheckResult) {
         // Handle result that a Product label was scanned with correct price - in our case,
-        // we will pass a message to the Fragment, that should be displayed on a snackbar.
-        snackbarMessageFlow.tryEmit(priceCheckResult.toMessage())
+        // we will pass details of a snackbar to the Activity to be displayed on a screen.
+        snackbarFlow.tryEmit(SnackbarData(priceCheckResult.toMessage(), R.color.transparentGreen))
     }
 
     override fun onWrongPrice(priceCheckResult: PriceCheckResult) {
         // Handle result that a Product label was scanned with wrong price - in our case,
-        // we will pass a message to the Fragment, that should be displayed on a snackbar.
-        snackbarMessageFlow.tryEmit(priceCheckResult.toMessage())
+        // we will pass details of a snackbar to the Activity to be displayed on a screen.
+        snackbarFlow.tryEmit(SnackbarData(priceCheckResult.toMessage(), R.color.transparentRed))
     }
 
     override fun onUnknownProduct(priceCheckResult: PriceCheckResult) {
         // Handle result that a Product label was scanned for an unknown Product - in our case,
-        // we will pass a message to the Fragment, that should be displayed on a snackbar.
-        snackbarMessageFlow.tryEmit(priceCheckResult.toMessage())
+        // we will pass details of a snackbar to the Activity to be displayed on a screen.
+        snackbarFlow.tryEmit(SnackbarData(priceCheckResult.toMessage(), R.color.transparentGrey))
     }
 
     override fun onSessionUpdate(session: PriceLabelSession, frameData: FrameData) {
@@ -152,7 +150,7 @@ class MainActivityViewModel : ViewModel(), PriceCheckListener {
     }
 
     private fun getStores() {
-        // Get/Update the list of stores by using the Catalog singleton object of the PPLE SDK.
+        // Get/update the list of stores by using the Catalog singleton object of the PPLE SDK.
         // Pass a CompletionHandler to the getStores method for handling API result.
         Catalog.getStores(
             object : CompletionHandler<List<Store>> {
@@ -176,13 +174,13 @@ class MainActivityViewModel : ViewModel(), PriceCheckListener {
     }
 
     private fun getProducts(store: Store) {
-        // Get/Update the Product items for a given Store.
+        // Get/update the Product items for a given Store.
 
         // First create the ProductCatalog object.
-        //
+
         // If you are using the ShelfView backend as your product catalog provider, you only need to specify the Store,
         // for which you will perform the Price Check - just like in the code below.
-        //
+
         // If on the other hand, you would like to use a different source of data for the ProductCatalog,
         // you should should pass your custom implementation of the ProductProvider interface, as the second argument
         // for the Catalog.getProductCatalog method - check the docs for more details.
@@ -194,7 +192,7 @@ class MainActivityViewModel : ViewModel(), PriceCheckListener {
                     }
 
                     override fun failure(error: Exception) {
-                        statusFlow.tryEmit(Status.CATALOG_DOWNLOAD_FAILED)
+                        statusFlow.tryEmit(Status.CATALOG_UPDATE_FAILED)
                     }
                 }
             )

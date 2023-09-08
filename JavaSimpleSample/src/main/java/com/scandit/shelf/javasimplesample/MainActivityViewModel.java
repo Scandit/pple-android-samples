@@ -51,7 +51,7 @@ public class MainActivityViewModel extends ViewModel implements PriceCheckListen
     private ProductCatalog catalog = null;
     private PriceCheck priceCheck = null;
 
-    private final MutableLiveData<String> snackbarMessageLiveData = new MutableLiveData<>();
+    private final MutableLiveData<SnackbarData> snackbarLiveData = new MutableLiveData<>();
     private final MutableLiveData<Status> statusLiveData = new MutableLiveData<>(Status.INIT);
     private final MutableLiveData<Store> currentStore = new MutableLiveData<>();
 
@@ -60,9 +60,9 @@ public class MainActivityViewModel extends ViewModel implements PriceCheckListen
         return statusLiveData;
     }
 
-    // Posts the message to the observing Fragment to be displayed on a snackbar.
-    public LiveData<String> getSnackbarMessage() {
-        return snackbarMessageLiveData;
+    // Posts the snackbar data to the observing Activity to be displayed on the screen.
+    public LiveData<SnackbarData> getSnackbarData() {
+        return snackbarLiveData;
     }
 
     // Posts currently selected store.
@@ -88,9 +88,7 @@ public class MainActivityViewModel extends ViewModel implements PriceCheckListen
         // Initialize the PriceCheck object
         priceCheck = new PriceCheck(view, catalog);
         priceCheck.addListener(this);
-        // Add a PriceCheckOverlay created in PriceCheckFragment.
-        // By default, price labels are sought on the whole capture view. If you want to limit the scan area,
-        // pass a non-null LocationSelection to PriceCheckOverlay's constructor.
+        // Add a PriceCheckOverlay and set the viewfinder configuration for a better user experience.
         priceCheck.addOverlay(overlay);
         priceCheck.setViewfinderConfiguration(viewfinderConfiguration);
     }
@@ -145,22 +143,22 @@ public class MainActivityViewModel extends ViewModel implements PriceCheckListen
     @Override
     public void onCorrectPrice(@NonNull PriceCheckResult priceCheckResult) {
         // Handle result that a Product label was scanned with correct price - in our case,
-        // we will pass a message to the Fragment, that should be displayed on a snackbar.
-        snackbarMessageLiveData.postValue(toMessage(priceCheckResult));
+        // we will pass details of a snackbar to the Activity to be displayed on a screen.
+        snackbarLiveData.postValue(new SnackbarData(toMessage(priceCheckResult), R.color.transparentGreen));
     }
 
     @Override
     public void onWrongPrice(@NonNull PriceCheckResult priceCheckResult) {
         // Handle result that a Product label was scanned with wrong price - in our case,
-        // we will pass a message to the Fragment, that should be displayed on a snackbar.
-        snackbarMessageLiveData.postValue(toMessage(priceCheckResult));
+        // we will pass details of a snackbar to the Activity to be displayed on a screen.
+        snackbarLiveData.postValue(new SnackbarData(toMessage(priceCheckResult), R.color.transparentRed));
     }
 
     @Override
     public void onUnknownProduct(@NonNull PriceCheckResult priceCheckResult) {
         // Handle result that a Product label was scanned for an unknown Product - in our case,
-        // we will pass a message to the Fragment, that should be displayed on a snackbar.
-        snackbarMessageLiveData.postValue(toMessage(priceCheckResult));
+        // we will pass details of a snackbar to the Activity to be displayed on a screen.
+        snackbarLiveData.postValue(new SnackbarData(toMessage(priceCheckResult), R.color.transparentGrey));
     }
 
     @Override
@@ -188,7 +186,7 @@ public class MainActivityViewModel extends ViewModel implements PriceCheckListen
     }
 
     private void getStores() {
-        // Get/Update the list of stores by using the Catalog singleton object of the PPLE SDK.
+        // Get/update the list of stores by using the Catalog singleton object of the PPLE SDK.
         // Pass a CompletionHandler to the getStores method for handling API result.
         Catalog.getStores(new CompletionHandler<List<Store>>() {
             @Override
@@ -212,13 +210,13 @@ public class MainActivityViewModel extends ViewModel implements PriceCheckListen
     }
 
     private void getProducts(Store store) {
-        // Get/Update the Product items for a given Store.
+        // Get/update the Product items for a given Store.
 
         // First create the ProductCatalog object.
-        //
+
         // If you are using the ShelfView backend as your product catalog provider, you only need to specify the Store,
         // for which you will perform the Price Check - just like in the code below.
-        //
+
         // If on the other hand, you would like to use a different source of data for the ProductCatalog,
         // you should should pass your custom implementation of the ProductProvider interface, as the second argument
         // for the Catalog.getProductCatalog method - check the docs for more details.

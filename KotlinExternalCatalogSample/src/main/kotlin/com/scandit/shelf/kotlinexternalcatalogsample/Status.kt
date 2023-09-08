@@ -15,10 +15,8 @@
 package com.scandit.shelf.kotlinexternalcatalogsample
 
 /**
- * Class representing status of the price check setup.
+ * Enum class representing status of the price check setup.
  */
-sealed class Status(val message: String) {
-    object Init : Status("Preparing to launch Price Check with external Product Provider ...")
-    object Ready : Status("Ready to launch Price Check with external Product Provider")
-    class Failed(message: String) : Status(message)
+enum class Status {
+    INIT, AUTH_FAILED, STORE_DOWNLOAD_FAILED, STORES_EMPTY, CATALOG_UPDATE_FAILED, READY
 }

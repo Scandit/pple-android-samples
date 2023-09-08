@@ -64,15 +64,15 @@ public class LoginFragment extends NavigationFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        swipeRefreshLayout = rootView.findViewById(R.id.swipe_layout);
+        swipeRefreshLayout = root.findViewById(R.id.swipe_layout);
 
-        TextInputEditText emailEditText = rootView.findViewById(R.id.email_text);
-        TextInputEditText passwordEditText = rootView.findViewById(R.id.password_text);
+        TextInputEditText emailEditText = root.findViewById(R.id.email_text);
+        TextInputEditText passwordEditText = root.findViewById(R.id.password_text);
 
-        MaterialTextView versionTextView = rootView.findViewById(R.id.sdk_version);
+        MaterialTextView versionTextView = root.findViewById(R.id.sdk_version);
         versionTextView.setText(ShelfSdkVersion.VERSION_STRING);
 
-        Button loginButton = rootView.findViewById(R.id.login_button);
+        Button loginButton = root.findViewById(R.id.login_button);
         loginButton.setOnClickListener(v -> {
             viewModel.login(emailEditText.getText().toString(), passwordEditText.getText().toString());
         });

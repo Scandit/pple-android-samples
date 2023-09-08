@@ -28,9 +28,9 @@ public class ScanAreaRepository {
     private ScanAreaRepository() {
     }
 
-    private float widthValue = 1f;
+    private float widthValue = 0.9f;
     private MeasureUnit widthUnit = MeasureUnit.FRACTION;
-    private float heightValue = 1f;
+    private float heightValue = 0.3f;
     private MeasureUnit heightUnit = MeasureUnit.FRACTION;
     private boolean showScanAreaGuides = false;
 

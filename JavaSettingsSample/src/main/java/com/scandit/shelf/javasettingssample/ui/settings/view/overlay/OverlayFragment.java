@@ -57,7 +57,7 @@ public class OverlayFragment extends NavigationFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        setUpToolbar(rootView.findViewById(R.id.toolbar), getString(R.string.overlay_settings), true);
+        setUpToolbar(root.findViewById(R.id.toolbar), getString(R.string.overlay_settings), true);
         setSwitchStates(view);
         setSpinners(view);
     }

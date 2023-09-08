@@ -42,7 +42,7 @@ public class ScanAreaHeightFragment extends MeasureUnitFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        setUpToolbar(rootView.findViewById(R.id.toolbar), getString(R.string.scan_area_height_settings), true);
+        setUpToolbar(root.findViewById(R.id.toolbar), getString(R.string.scan_area_height_settings), true);
     }
 
     @Override

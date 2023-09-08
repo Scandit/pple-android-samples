@@ -39,10 +39,10 @@ class MainActivityViewModel : ViewModel(), PriceCheckListener {
     private var priceCheck: PriceCheck? = null
 
     // Emits the status of the price check setup.
-    val statusFlow: MutableStateFlow<Status> = MutableStateFlow(Status.Init)
+    val statusFlow: MutableStateFlow<Status> = MutableStateFlow(Status.INIT)
 
-    // Emits the message to the Fragment to be displayed on a snackbar.
-    val snackbarMessageFlow: MutableStateFlow<String?> = MutableStateFlow(null)
+    // Emits the snackbar data to be displayed on the screen.
+    val snackbarFlow: MutableStateFlow<SnackbarData?> = MutableStateFlow(null)
 
     // Emits the currently selected store.
     val currentStoreFlow: MutableStateFlow<Store?> = MutableStateFlow(null)
@@ -66,9 +66,7 @@ class MainActivityViewModel : ViewModel(), PriceCheckListener {
             // Initialize the PriceCheck object
             priceCheck = PriceCheck(view, it).apply {
                 addListener(this@MainActivityViewModel)
-                // Add a PriceCheckOverlay created in MainActivity.
-                // By default, price labels are sought on the whole capture view. If you want to limit the scan area,
-                // pass a non-null LocationSelection to PriceCheckOverlay's constructor.
+                // Add a PriceCheckOverlay and set the viewfinder configuration for a better user experience.
                 addOverlay(overlay)
                 setViewfinderConfiguration(viewfinderConfiguration)
             }
@@ -109,23 +107,25 @@ class MainActivityViewModel : ViewModel(), PriceCheckListener {
     fun onDestroyPriceCheck() {
         priceCheck?.dispose()
         priceCheck = null
-        statusFlow.value = Status.Init
+        statusFlow.value = Status.INIT
     }
 
     override fun onCorrectPrice(priceCheckResult: PriceCheckResult) {
         // Handle result that a Product label was scanned with correct price - in our case,
-        // we will pass a message to the Fragment, that should be displayed on a snackbar.
-        snackbarMessageFlow.tryEmit(priceCheckResult.toMessage())
+        // we will pass details of a snackbar to the Activity to be displayed on a screen.
+        snackbarFlow.tryEmit(SnackbarData(priceCheckResult.toMessage(), R.color.transparentGreen))
     }
 
     override fun onWrongPrice(priceCheckResult: PriceCheckResult) {
-        // Handle result that a Product label was scanned with wrong price
-        snackbarMessageFlow.tryEmit(priceCheckResult.toMessage())
+        // Handle result that a Product label was scanned with wrong price - in our case,
+        // we will pass details of a snackbar to the Activity to be displayed on a screen.
+        snackbarFlow.tryEmit(SnackbarData(priceCheckResult.toMessage(), R.color.transparentRed))
     }
 
     override fun onUnknownProduct(priceCheckResult: PriceCheckResult) {
-        // Handle result that a Product label was scanned for an unknown Product
-        snackbarMessageFlow.tryEmit(priceCheckResult.toMessage())
+        // Handle result that a Product label was scanned for an unknown Product - in our case,
+        // we will pass details of a snackbar to the Activity to be displayed on a screen.
+        snackbarFlow.tryEmit(SnackbarData(priceCheckResult.toMessage(), R.color.transparentGrey))
     }
 
     override fun onSessionUpdate(session: PriceLabelSession, frameData: FrameData) {
@@ -143,20 +143,20 @@ class MainActivityViewModel : ViewModel(), PriceCheckListener {
                 }
 
                 override fun failure(error: Exception) {
-                    statusFlow.tryEmit(Status.Failed("Failed to authenticate username: \"$PPLE_USERNAME\""))
+                    statusFlow.tryEmit(Status.AUTH_FAILED)
                 }
             }
         )
     }
 
     private fun getStores() {
-        // Get/Update the list of stores by using the Catalog singleton object of the PPLE SDK.
+        // Get/update the list of stores by using the Catalog singleton object of the PPLE SDK.
         // Pass a CompletionHandler to the getStores method for handling API result.
         Catalog.getStores(
             object : CompletionHandler<List<Store>> {
                 override fun success(result: List<Store>) {
                     if (result.isEmpty()) {
-                        statusFlow.tryEmit(Status.Failed("Organization has no stores"))
+                        statusFlow.tryEmit(Status.STORES_EMPTY)
                     } else {
                         // Get products for a selected store from your organization.
                         // For simplicity reasons, below we select the first store on the list.
@@ -167,7 +167,7 @@ class MainActivityViewModel : ViewModel(), PriceCheckListener {
                 }
 
                 override fun failure(error: Exception) {
-                    statusFlow.tryEmit(Status.Failed("Failed to fetch the Stores"))
+                    statusFlow.tryEmit(Status.STORE_DOWNLOAD_FAILED)
                 }
             }
         )
@@ -184,11 +184,11 @@ class MainActivityViewModel : ViewModel(), PriceCheckListener {
             it.update(
                 object : CompletionHandler<Unit> {
                     override fun success(result: Unit) {
-                        statusFlow.tryEmit(Status.Ready)
+                        statusFlow.tryEmit(Status.READY)
                     }
 
                     override fun failure(error: Exception) {
-                        statusFlow.tryEmit(Status.Failed("Failed to fetch the config for the ${store.name} store"))
+                        statusFlow.tryEmit(Status.CATALOG_UPDATE_FAILED)
                     }
                 }
             )

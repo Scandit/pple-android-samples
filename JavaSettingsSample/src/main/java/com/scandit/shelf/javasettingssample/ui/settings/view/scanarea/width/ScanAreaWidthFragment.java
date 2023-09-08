@@ -43,7 +43,7 @@ public class ScanAreaWidthFragment extends MeasureUnitFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        setUpToolbar(rootView.findViewById(R.id.toolbar), getString(R.string.scan_area_width_settings), true);
+        setUpToolbar(root.findViewById(R.id.toolbar), getString(R.string.scan_area_width_settings), true);
     }
 
     @Override

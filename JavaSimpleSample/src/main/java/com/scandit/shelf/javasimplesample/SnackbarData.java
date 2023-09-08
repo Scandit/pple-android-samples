@@ -15,8 +15,23 @@
 package com.scandit.shelf.javasimplesample;
 
 /**
- * Enum class representing status of the price check setup.
+ * Simple data class holding data about the snackbar that should be displayed on the screen.
  */
-public enum Status {
-    INIT, AUTH_FAILED, STORE_DOWNLOAD_FAILED, STORES_EMPTY, CATALOG_DOWNLOAD_FAILED, READY
+public class SnackbarData {
+
+    private final String message;
+    private final int backgroundColorResId;
+
+    public SnackbarData(String message, int backgroundColorResId) {
+        this.message = message;
+        this.backgroundColorResId = backgroundColorResId;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public int getBackgroundColorResId() {
+        return backgroundColorResId;
+    }
 }

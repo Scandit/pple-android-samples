@@ -39,12 +39,12 @@ import com.scandit.shelf.javasettingssample.R;
  */
 public class NavigationFragment extends Fragment {
 
-    protected View rootView;
+    protected View root;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        rootView = view;
+        root = view;
     }
 
     protected void setUpToolbar(Toolbar toolbar, String toolbarTitle, Boolean showBackButton) {
@@ -104,7 +104,7 @@ public class NavigationFragment extends Fragment {
 
     protected void showSnackbar(String message) {
         if (message != null) {
-            Snackbar.make(rootView, message, Snackbar.LENGTH_LONG).show();
+            Snackbar.make(root, message, Snackbar.LENGTH_LONG).show();
         }
     }
 }

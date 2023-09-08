@@ -14,15 +14,16 @@
 
 package com.scandit.shelf.javasettingssample.ui.pricecheck;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.snackbar.Snackbar;
@@ -72,7 +73,6 @@ public class PriceCheckFragment extends CameraPermissionFragment {
         return inflater.inflate(R.layout.price_check_fragment, container, false);
     }
 
-    @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -80,23 +80,24 @@ public class PriceCheckFragment extends CameraPermissionFragment {
         Bundle args = getArguments();
         // Get the Store name that was passed to this Fragment as argument.
         String storeName = args == null ? "" : args.getString(ARG_STORE_NAME);
-        setUpToolbar(rootView.findViewById(R.id.toolbar), storeName, true);
+        setUpToolbar(root.findViewById(R.id.toolbar), storeName, true);
 
-        rootView.findViewById(R.id.settings_button).setOnClickListener(
+        root.findViewById(R.id.settings_button).setOnClickListener(
                 view1 -> moveToFragment(SettingsOverviewFragment.newInstance(), true, null)
         );
 
-        captureView = rootView.findViewById(R.id.capture_view);
+        captureView = root.findViewById(R.id.capture_view);
 
-        pausedOverlayView = rootView.findViewById(R.id.paused_overlay_view);
+        pausedOverlayView = root.findViewById(R.id.paused_overlay_view);
         pausedOverlayView.setOnTouchListener((v, event) -> {
             if (event.getAction() == MotionEvent.ACTION_UP) {
                 viewModel.resumePriceCheck();
+                v.performClick();
             }
             return true;
         });
 
-        customOverlayView = rootView.findViewById(R.id.custom_overlay);
+        customOverlayView = root.findViewById(R.id.custom_overlay);
         customOverlayView.setVisibility(viewModel.isCustomOverlayEnabled() ? View.VISIBLE : View.GONE);
 
         observeLiveData();
@@ -125,8 +126,8 @@ public class PriceCheckFragment extends CameraPermissionFragment {
 
     private void observeLiveData() {
         // Observe the LivaData that posts messages to be displayed on a snackbar.
-        viewModel.getSnackbarMessage().observe(getViewLifecycleOwner(), message -> {
-            if (message != null) showTopSnackbar(message);
+        viewModel.getSnackbarData().observe(getViewLifecycleOwner(), snackbarData -> {
+            if (snackbarData != null) showMessage(snackbarData);
         });
 
         // Observe the LivaData that posts information whether non-continuous price check flow is paused.
@@ -140,8 +141,13 @@ public class PriceCheckFragment extends CameraPermissionFragment {
         });
     }
 
-    private void showTopSnackbar(String message) {
-        View snackbar = rootView.findViewById(R.id.top_snackbar);
-        Snackbar.make(snackbar, message, Snackbar.LENGTH_LONG).show();
+    private void showMessage(SnackbarData snackbarData) {
+        View topSnackbar = root.findViewById(R.id.top_snackbar);
+        Snackbar snackbar = Snackbar.make(topSnackbar, snackbarData.getMessage(), Snackbar.LENGTH_LONG);
+        snackbar.setBackgroundTint(ContextCompat.getColor(requireContext(), snackbarData.getBackgroundColorResId()));
+        View snackbarView = snackbar.getView();
+        TextView textView = (TextView) snackbarView.findViewById(com.google.android.material.R.id.snackbar_text);
+        textView.setMaxLines(3);
+        snackbar.show();
     }
 }

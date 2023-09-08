@@ -14,6 +14,9 @@
 
 package com.scandit.shelf.kotlinsimplesample
 
+/**
+ * Enum class representing status of the price check setup.
+ */
 enum class Status {
-    INIT, AUTH_FAILED, STORE_DOWNLOAD_FAILED, STORES_EMPTY, CATALOG_DOWNLOAD_FAILED, READY
+    INIT, AUTH_FAILED, STORE_DOWNLOAD_FAILED, STORES_EMPTY, CATALOG_UPDATE_FAILED, READY
 }
