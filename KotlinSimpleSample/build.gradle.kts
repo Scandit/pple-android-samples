@@ -27,7 +27,7 @@ android {
 }
 
 dependencies {
-    implementation("com.scandit.shelf:pple-sdk:1.3.3")
+    implementation("com.scandit.shelf:pple-sdk:1.3.4")
 
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("androidx.core:core-ktx:1.10.1")
