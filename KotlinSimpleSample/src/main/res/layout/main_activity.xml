@@ -7,21 +7,22 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <com.scandit.shelf.sdk.core.ui.CaptureView
+        android:id="@+id/capture_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
     <TextView
         android:id="@+id/status_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
+        android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Status" />
-
-    <FrameLayout
-        android:id="@+id/capture_view_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/top_snackbar"

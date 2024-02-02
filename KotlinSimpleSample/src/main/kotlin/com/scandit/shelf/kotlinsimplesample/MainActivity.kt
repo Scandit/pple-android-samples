@@ -15,9 +15,6 @@
 package com.scandit.shelf.kotlinsimplesample
 
 import android.os.Bundle
-import android.view.ViewGroup
-import android.view.ViewGroup.LayoutParams.MATCH_PARENT
-import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.annotation.StringRes
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -51,7 +48,7 @@ class MainActivity : CameraPermissionActivity() {
 
     private lateinit var viewModel: MainActivityViewModel
     private lateinit var root: ConstraintLayout
-    private lateinit var captureViewContainer: FrameLayout
+    private lateinit var captureView: CaptureView
     private lateinit var status: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,7 +57,7 @@ class MainActivity : CameraPermissionActivity() {
 
         setContentView(R.layout.main_activity)
         root = findViewById(R.id.container)
-        captureViewContainer = findViewById(R.id.capture_view_container)
+        captureView = findViewById(R.id.capture_view)
         status = findViewById(R.id.status_text_view)
 
         collectFlows()
@@ -89,11 +86,6 @@ class MainActivity : CameraPermissionActivity() {
     override fun onCameraPermissionGranted() {
         // As price check requires the camera feed, it can only be started once the camera
         // permission has been granted.
-        // Additionally, CaptureView instance should only be created, after ProductCatalog.update()
-        // method is called, which fetches the necessary config fot CaptureView.
-        val captureView = CaptureView(this)
-        captureViewContainer.addView(captureView, ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT))
-
         viewModel.initPriceCheck(captureView, getDefaultOverlay(), getDefaultViewfinderConfiguration())
         viewModel.resumePriceCheck()
     }
@@ -160,6 +152,7 @@ class MainActivity : CameraPermissionActivity() {
     }
 
     private fun onStatusReady() {
+        clearStatus()
         // Check for camera permission and request it, if it hasn't yet been granted.
         // Once we have the permission the onCameraPermissionGranted() method will be called.
         requestCameraPermission()
@@ -175,5 +168,9 @@ class MainActivity : CameraPermissionActivity() {
 
     private fun setStatus(@StringRes message: Int) {
         status.setText(message)
+    }
+
+    private fun clearStatus() {
+        status.setText("")
     }
 }

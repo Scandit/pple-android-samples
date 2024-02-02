@@ -11,7 +11,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="white30Transparent">#B3FFFFFF</color>
 
-    <color name="black">#FF1B2026</color>
+    <color name="black">#FF000000</color>
     <color name="black80Transparent">#CC121619</color>
     <color name="black30Transparent">#B32E2E2E</color>
 

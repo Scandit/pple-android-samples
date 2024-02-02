@@ -93,9 +93,8 @@ public class NavigationFragment extends Fragment {
 
     protected void dismissKeyboard(View focusedView) {
         try {
-            InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(
-                    Context.INPUT_METHOD_SERVICE
-            );
+            InputMethodManager imm =
+                    (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(focusedView.getWindowToken(), 0);
         } catch (Exception e) {
             Log.d(getClass().getSimpleName(), "Error closing the keyboard", e);

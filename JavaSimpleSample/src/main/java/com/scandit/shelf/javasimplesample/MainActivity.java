@@ -14,12 +14,8 @@
 
 package com.scandit.shelf.javasimplesample;
 
-import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import androidx.annotation.StringRes;
@@ -51,7 +47,7 @@ public class MainActivity extends CameraPermissionActivity {
 
     private MainActivityViewModel viewModel;
     private ConstraintLayout root;
-    private FrameLayout captureViewContainer;
+    private CaptureView captureView;
     private TextView status;
 
     @Override
@@ -60,7 +56,7 @@ public class MainActivity extends CameraPermissionActivity {
         viewModel = (new ViewModelProvider(this)).get(MainActivityViewModel.class);
         setContentView(R.layout.main_activity);
         root = findViewById(R.id.container);
-        captureViewContainer = findViewById(R.id.capture_view_container);
+        captureView = findViewById(R.id.capture_view);
         status = findViewById(R.id.status_text_view);
         observeLiveData();
         viewModel.authenticateAndFetchData();
@@ -89,13 +85,9 @@ public class MainActivity extends CameraPermissionActivity {
 
     @Override
     public void onCameraPermissionGranted() {
+        captureView.setVisibility(View.VISIBLE);
         // As price check requires the camera feed, it can only be started once the camera
         // permission has been granted.
-        // Additionally, CaptureView instance should only be created, after ProductCatalog.update()
-        // method is called, which fetches the necessary config fot CaptureView.
-        CaptureView captureView = new CaptureView(this);
-        captureViewContainer.addView(captureView, new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
-
         viewModel.initPriceCheck(captureView, getDefaultOverlay(), getDefaultViewfinderConfiguration());
         viewModel.resumePriceCheck();
     }
@@ -173,6 +165,7 @@ public class MainActivity extends CameraPermissionActivity {
     }
 
     private void onStatusReady() {
+        clearStatus();
         // Check for camera permission and request it, if it hasn't yet been granted.
         // Once we have the permission the onCameraPermissionGranted() method will be called.
         requestCameraPermission();
@@ -190,5 +183,9 @@ public class MainActivity extends CameraPermissionActivity {
 
     private void setStatus(@StringRes int message) {
         status.setText(message);
+    }
+
+    private void clearStatus() {
+        status.setText("");
     }
 }
