@@ -29,7 +29,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,6 +41,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
@@ -53,7 +53,6 @@ import com.scandit.shelf.sdk.core.ui.viewfinder.ViewfinderConfiguration
 import com.scandit.shelf.sdk.price.ui.PriceCheckOverlay
 
 @OptIn(ExperimentalPermissionsApi::class, ExperimentalMaterial3Api::class)
-
 @Composable
 fun MainScreen(
     viewModel: MainActivityViewModel = viewModel(),
@@ -62,9 +61,9 @@ fun MainScreen(
 ) {
     val cameraPermissionState: PermissionState = rememberPermissionState(Manifest.permission.CAMERA)
 
-    val status: Status by viewModel.statusFlow.collectAsState()
-    val snackbar: SnackbarData? by viewModel.snackbarFlow.collectAsState()
-    val store: Store? by viewModel.currentStoreFlow.collectAsState()
+    val status: Status by viewModel.statusFlow.collectAsStateWithLifecycle()
+    val snackbar: SnackbarData? by viewModel.snackbarFlow.collectAsStateWithLifecycle()
+    val store: Store? by viewModel.currentStoreFlow.collectAsStateWithLifecycle()
 
     Scaffold(topBar = {
         TopAppBar(title = { Text(store?.name.orEmpty()) })
