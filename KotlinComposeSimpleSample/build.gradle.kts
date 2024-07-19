@@ -42,7 +42,7 @@ android {
 }
 
 dependencies {
-    implementation("com.scandit.shelf:pple-sdk:1.4.2-rc.1")
+    implementation("com.scandit.shelf:pple-sdk:1.4.2")
 
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.activity:activity-compose:1.8.2")
