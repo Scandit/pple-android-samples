@@ -194,17 +194,29 @@ public class ViewfinderTypeRectangular extends ViewfinderType {
         this.lineStyle = style;
     }
 
-    public float getDimming() { return dimming; }
+    public float getDimming() {
+        return dimming;
+    }
 
-    public void setDimming(float dimming) { this.dimming = dimming; }
+    public void setDimming(float dimming) {
+        this.dimming = dimming;
+    }
 
-    public boolean getAnimation() { return animation; }
+    public boolean getAnimation() {
+        return animation;
+    }
 
-    public void setAnimation(boolean animation) { this.animation = animation; }
+    public void setAnimation(boolean animation) {
+        this.animation = animation;
+    }
 
-    public boolean getLooping() { return looping; }
+    public boolean getLooping() {
+        return looping;
+    }
 
-    public void setLooping(boolean looping) { this.looping = looping; }
+    public void setLooping(boolean looping) {
+        this.looping = looping;
+    }
 
     @Nullable
     @Override
@@ -221,19 +233,11 @@ public class ViewfinderTypeRectangular extends ViewfinderType {
         viewfinder.setAnimation(finalAnimation);
 
         switch (sizeSpecification) {
-            case WIDTH_AND_HEIGHT:
-                viewfinder.setSize(new SizeWithUnit(width, height));
-                break;
-            case WIDTH_AND_HEIGHT_ASPECT:
-                viewfinder.setWidthAndAspectRatio(width, heightAspect);
-                break;
-            case HEIGHT_AND_WIDTH_ASPECT:
-                viewfinder.setHeightAndAspectRatio(height, widthAspect);
-                break;
-            case SHORTER_DIMENSION_AND_ASPECT:
-                viewfinder.setShorterDimensionAndAspectRatio(
-                        shorterDimension.getValue(), longerDimensionAspect);
-                break;
+            case WIDTH_AND_HEIGHT -> viewfinder.setSize(new SizeWithUnit(width, height));
+            case WIDTH_AND_HEIGHT_ASPECT -> viewfinder.setWidthAndAspectRatio(width, heightAspect);
+            case HEIGHT_AND_WIDTH_ASPECT -> viewfinder.setHeightAndAspectRatio(height, widthAspect);
+            case SHORTER_DIMENSION_AND_ASPECT ->
+                    viewfinder.setShorterDimensionAndAspectRatio(shorterDimension.getValue(), longerDimensionAspect);
         }
         return viewfinder;
     }
@@ -254,22 +258,22 @@ public class ViewfinderTypeRectangular extends ViewfinderType {
         SizeWithUnitAndAspect size = viewfinder.getSizeWithUnitAndAspect();
         sizeSpecification = SizeSpecification.forSizingMode(size.getSizingMode());
         switch (sizeSpecification) {
-            case WIDTH_AND_HEIGHT:
+            case WIDTH_AND_HEIGHT -> {
                 width = size.getWidthAndHeight().getWidth();
                 height = size.getWidthAndHeight().getHeight();
-                break;
-            case WIDTH_AND_HEIGHT_ASPECT:
+            }
+            case WIDTH_AND_HEIGHT_ASPECT -> {
                 width = size.getWidthAndAspectRatio().getSize();
                 heightAspect = size.getWidthAndAspectRatio().getAspect();
-                break;
-            case HEIGHT_AND_WIDTH_ASPECT:
+            }
+            case HEIGHT_AND_WIDTH_ASPECT -> {
                 height = size.getHeightAndAspectRatio().getSize();
                 widthAspect = size.getHeightAndAspectRatio().getAspect();
-                break;
-            case SHORTER_DIMENSION_AND_ASPECT:
+            }
+            case SHORTER_DIMENSION_AND_ASPECT -> {
                 shorterDimension = size.getShorterDimensionAndAspectRatio().getSize();
                 longerDimensionAspect = size.getShorterDimensionAndAspectRatio().getAspect();
-                break;
+            }
         }
     }
 }

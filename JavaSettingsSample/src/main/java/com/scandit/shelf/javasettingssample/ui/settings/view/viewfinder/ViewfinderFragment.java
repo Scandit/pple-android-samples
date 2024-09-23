@@ -465,38 +465,38 @@ public class ViewfinderFragment extends NavigationFragment
         SizeSpecification spec = viewfinder.getSizeSpecification();
 
         switch (spec) {
-            case WIDTH_AND_HEIGHT:
+            case WIDTH_AND_HEIGHT -> {
                 containerHeight.setVisibility(View.VISIBLE);
                 containerWidth.setVisibility(View.VISIBLE);
                 containerShorterDimension.setVisibility(View.GONE);
                 containerHeightAspect.setVisibility(View.GONE);
                 containerWidthAspect.setVisibility(View.GONE);
                 containerLongerDimensionAspect.setVisibility(View.GONE);
-                break;
-            case HEIGHT_AND_WIDTH_ASPECT:
+            }
+            case HEIGHT_AND_WIDTH_ASPECT -> {
                 containerHeight.setVisibility(View.VISIBLE);
                 containerWidth.setVisibility(View.GONE);
                 containerShorterDimension.setVisibility(View.GONE);
                 containerHeightAspect.setVisibility(View.GONE);
                 containerWidthAspect.setVisibility(View.VISIBLE);
                 containerLongerDimensionAspect.setVisibility(View.GONE);
-                break;
-            case WIDTH_AND_HEIGHT_ASPECT:
+            }
+            case WIDTH_AND_HEIGHT_ASPECT -> {
                 containerHeight.setVisibility(View.GONE);
                 containerWidth.setVisibility(View.VISIBLE);
                 containerShorterDimension.setVisibility(View.GONE);
                 containerHeightAspect.setVisibility(View.VISIBLE);
                 containerWidthAspect.setVisibility(View.GONE);
                 containerLongerDimensionAspect.setVisibility(View.GONE);
-                break;
-            case SHORTER_DIMENSION_AND_ASPECT:
+            }
+            case SHORTER_DIMENSION_AND_ASPECT -> {
                 containerHeight.setVisibility(View.GONE);
                 containerWidth.setVisibility(View.GONE);
                 containerShorterDimension.setVisibility(View.VISIBLE);
                 containerHeightAspect.setVisibility(View.GONE);
                 containerWidthAspect.setVisibility(View.GONE);
                 containerLongerDimensionAspect.setVisibility(View.VISIBLE);
-                break;
+            }
         }
 
         refreshRectangularViewfinderData(viewfinder);

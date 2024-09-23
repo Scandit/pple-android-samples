@@ -53,7 +53,7 @@ public class MainActivity extends CameraPermissionActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        viewModel = (new ViewModelProvider(this)).get(MainActivityViewModel.class);
+        viewModel = new ViewModelProvider(this).get(MainActivityViewModel.class);
         setContentView(R.layout.main_activity);
         root = findViewById(R.id.container);
         captureView = findViewById(R.id.capture_view);
@@ -139,24 +139,12 @@ public class MainActivity extends CameraPermissionActivity {
         viewModel.getStatus().observe(this, newStatus -> {
             // Observe the LiveData that holds price checking results.
             switch (newStatus) {
-                case INIT:
-                    setStatus(R.string.init);
-                    break;
-                case READY:
-                    onStatusReady();
-                    break;
-                case AUTH_FAILED:
-                    setStatus(R.string.authentication_failed);
-                    break;
-                case STORE_DOWNLOAD_FAILED:
-                    setStatus(R.string.store_download_failed);
-                    break;
-                case STORES_EMPTY:
-                    setStatus(R.string.stores_empty);
-                    break;
-                case CATALOG_DOWNLOAD_FAILED:
-                    setStatus(R.string.catalog_update_failed);
-                    break;
+                case INIT -> setStatus(R.string.init);
+                case READY -> onStatusReady();
+                case AUTH_FAILED -> setStatus(R.string.authentication_failed);
+                case STORE_DOWNLOAD_FAILED -> setStatus(R.string.store_download_failed);
+                case STORES_EMPTY -> setStatus(R.string.stores_empty);
+                case CATALOG_DOWNLOAD_FAILED -> setStatus(R.string.catalog_update_failed);
             }
         });
 

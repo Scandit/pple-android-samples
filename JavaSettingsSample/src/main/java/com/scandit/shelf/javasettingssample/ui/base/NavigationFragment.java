@@ -17,6 +17,8 @@ package com.scandit.shelf.javasettingssample.ui.base;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -26,9 +28,11 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.Lifecycle;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.scandit.shelf.javasettingssample.R;
@@ -37,7 +41,7 @@ import com.scandit.shelf.javasettingssample.R;
  * Base Fragment that handles all basic setup operations such as setting up the toolbar, setting
  * up navigation from/to the Fragment, inflating options menu and showing a Snackbar message.
  */
-public class NavigationFragment extends Fragment {
+public class NavigationFragment extends Fragment implements MenuProvider {
 
     protected View root;
 
@@ -54,7 +58,7 @@ public class NavigationFragment extends Fragment {
             ActionBar actionBar = activity.getSupportActionBar();
             if (actionBar != null) {
                 actionBar.show();
-                setHasOptionsMenu(true);
+                activity.addMenuProvider(this, getViewLifecycleOwner(), Lifecycle.State.RESUMED);
                 actionBar.setDisplayHomeAsUpEnabled(showBackButton);
                 actionBar.setHomeAsUpIndicator(R.drawable.ic_toolbar_back);
                 actionBar.setTitle(toolbarTitle);
@@ -63,11 +67,16 @@ public class NavigationFragment extends Fragment {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            requireActivity().onBackPressed();
+    public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
+        // empty menu
+    }
+
+    @Override
+    public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+        if (menuItem.getItemId() == android.R.id.home) {
+            requireActivity().getOnBackPressedDispatcher().onBackPressed();
         }
-        return super.onOptionsItemSelected(item);
+        return true;
     }
 
     protected void clearBackStack() {

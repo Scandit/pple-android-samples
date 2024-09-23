@@ -45,7 +45,6 @@ public class SettingsOverviewFragment extends NavigationFragment
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(false);
         viewModel = new ViewModelProvider(this).get(SettingsOverviewViewModel.class);
     }
 
@@ -82,15 +81,9 @@ public class SettingsOverviewFragment extends NavigationFragment
 
     private void moveToDeeperSettings(SettingsOverviewEntry entry) {
         switch (entry) {
-            case FEEDBACK:
-                moveToFragment(FeedbackFragment.newInstance(), true, null);
-                break;
-            case VIEW:
-                moveToFragment(ViewSettingsOverviewFragment.newInstance(), true, null);
-                break;
-            case FLOW:
-                moveToFragment(FlowFragment.newInstance(), true, null);
-                break;
+            case FEEDBACK -> moveToFragment(FeedbackFragment.newInstance(), true, null);
+            case VIEW -> moveToFragment(ViewSettingsOverviewFragment.newInstance(), true, null);
+            case FLOW -> moveToFragment(FlowFragment.newInstance(), true, null);
         }
     }
 }

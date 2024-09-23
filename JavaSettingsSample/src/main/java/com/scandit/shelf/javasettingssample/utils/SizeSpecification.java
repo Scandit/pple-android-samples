@@ -33,15 +33,11 @@ public enum SizeSpecification {
     }
 
     public static SizeSpecification forSizingMode(SizingMode mode) {
-        switch (mode) {
-            case WIDTH_AND_ASPECT_RATIO:
-                return WIDTH_AND_HEIGHT_ASPECT;
-            case HEIGHT_AND_ASPECT_RATIO:
-                return HEIGHT_AND_WIDTH_ASPECT;
-            case SHORTER_DIMENSION_AND_ASPECT_RATIO:
-                return SHORTER_DIMENSION_AND_ASPECT;
-            default:
-                return WIDTH_AND_HEIGHT;
-        }
+        return switch (mode) {
+            case WIDTH_AND_ASPECT_RATIO -> WIDTH_AND_HEIGHT_ASPECT;
+            case HEIGHT_AND_ASPECT_RATIO -> HEIGHT_AND_WIDTH_ASPECT;
+            case SHORTER_DIMENSION_AND_ASPECT_RATIO -> SHORTER_DIMENSION_AND_ASPECT;
+            default -> WIDTH_AND_HEIGHT;
+        };
     }
 }

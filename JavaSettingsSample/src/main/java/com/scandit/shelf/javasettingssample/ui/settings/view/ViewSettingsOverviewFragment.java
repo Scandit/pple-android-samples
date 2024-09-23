@@ -45,7 +45,6 @@ public class ViewSettingsOverviewFragment extends NavigationFragment
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(false);
         viewModel = new ViewModelProvider(this).get(ViewSettingsOverviewViewModel.class);
     }
 
@@ -82,15 +81,9 @@ public class ViewSettingsOverviewFragment extends NavigationFragment
 
     private void moveToDeeperSettings(ViewSettingsOverviewEntry entry) {
         switch (entry) {
-            case OVERLAY:
-                moveToFragment(OverlayFragment.newInstance(), true, null);
-                break;
-            case VIEWFINDER:
-                moveToFragment(ViewfinderFragment.newInstance(), true, null);
-                break;
-            case SCAN_AREA:
-                moveToFragment(ScanAreaFragment.newInstance(), true, null);
-                break;
+            case OVERLAY -> moveToFragment(OverlayFragment.newInstance(), true, null);
+            case VIEWFINDER -> moveToFragment(ViewfinderFragment.newInstance(), true, null);
+            case SCAN_AREA -> moveToFragment(ScanAreaFragment.newInstance(), true, null);
         }
     }
 }
