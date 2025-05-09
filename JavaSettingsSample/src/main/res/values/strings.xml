@@ -60,7 +60,6 @@
     <!-- Viewfinder -->
     <string name="type">Type</string>
     <string name="none">None</string>
-    <string name="laserline">Laserline</string>
     <string name="aimer">Aimer</string>
     <string name="style">Style</string>
     <string name="line_style">Line Style</string>

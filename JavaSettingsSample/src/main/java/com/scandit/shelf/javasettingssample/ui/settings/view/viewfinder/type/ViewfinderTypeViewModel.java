@@ -18,8 +18,6 @@ import androidx.lifecycle.ViewModel;
 
 import com.scandit.shelf.javasettingssample.repository.ViewfinderRepository;
 import com.scandit.shelf.sdk.core.ui.viewfinder.AimerViewfinder;
-import com.scandit.shelf.sdk.core.ui.viewfinder.LaserlineViewfinder;
-import com.scandit.shelf.sdk.core.ui.viewfinder.LaserlineViewfinderStyle;
 import com.scandit.shelf.sdk.core.ui.viewfinder.RectangularViewfinder;
 import com.scandit.shelf.sdk.core.ui.viewfinder.RectangularViewfinderStyle;
 import com.scandit.shelf.sdk.core.ui.viewfinder.Viewfinder;
@@ -32,8 +30,6 @@ public class ViewfinderTypeViewModel extends ViewModel {
         Viewfinder viewfinder = getCurrentViewfinder();
         if (viewfinder instanceof RectangularViewfinder) {
             return ViewfinderTypeRectangular.fromCurrentViewfinderAndSettings(viewfinder, repository);
-        } else if (viewfinder instanceof LaserlineViewfinder) {
-            return ViewfinderTypeLaserline.fromCurrentViewfinderAndSettings(viewfinder, repository);
         } else if (viewfinder instanceof AimerViewfinder) {
             return ViewfinderTypeAimer.fromCurrentViewfinderAndSettings(viewfinder, repository);
         } else {
@@ -51,10 +47,6 @@ public class ViewfinderTypeViewModel extends ViewModel {
 
     public void updateViewfinder(ViewfinderType viewfinderType) {
         repository.setViewfinder(viewfinderType.buildViewfinder());
-    }
-
-    public LaserlineViewfinderStyle getLaserlineViewfinderStyle() {
-        return repository.getLaserlineViewfinderStyle();
     }
 
     public RectangularViewfinderStyle getRectangularViewfinderStyle() {

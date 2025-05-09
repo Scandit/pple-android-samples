@@ -15,15 +15,12 @@
 package com.scandit.shelf.javasettingssample.repository;
 
 import com.scandit.shelf.javasettingssample.ui.settings.view.viewfinder.type.ViewfinderTypeAimer;
-import com.scandit.shelf.javasettingssample.ui.settings.view.viewfinder.type.color.LaserlineDisabledColor;
-import com.scandit.shelf.javasettingssample.ui.settings.view.viewfinder.type.color.LaserlineEnabledColor;
 import com.scandit.shelf.javasettingssample.ui.settings.view.viewfinder.type.color.RectangularDisabledColor;
 import com.scandit.shelf.javasettingssample.ui.settings.view.viewfinder.type.color.RectangularEnabledColor;
 import com.scandit.shelf.javasettingssample.utils.SizeSpecification;
 import com.scandit.shelf.sdk.core.common.geometry.FloatWithUnit;
 import com.scandit.shelf.sdk.core.common.geometry.MeasureUnit;
 import com.scandit.shelf.sdk.core.common.geometry.SizeWithUnit;
-import com.scandit.shelf.sdk.core.ui.viewfinder.LaserlineViewfinderStyle;
 import com.scandit.shelf.sdk.core.ui.viewfinder.RectangularViewfinder;
 import com.scandit.shelf.sdk.core.ui.viewfinder.RectangularViewfinderLineStyle;
 import com.scandit.shelf.sdk.core.ui.viewfinder.RectangularViewfinderStyle;
@@ -53,11 +50,6 @@ public class ViewfinderRepository {
     private float rectangularViewfinderDimming = 0.6f;
     private boolean rectangularViewfinderAnimation = false;
     private boolean rectangularViewfinderLooping = false;
-
-    private FloatWithUnit laserlineViewfinderWidth = new FloatWithUnit(0.75f, MeasureUnit.FRACTION);
-    private LaserlineEnabledColor laserlineViewfinderEnabledColor = LaserlineEnabledColor.DEFAULT;
-    private LaserlineDisabledColor laserlineViewfinderDisabledColor = LaserlineDisabledColor.DEFAULT;
-    private LaserlineViewfinderStyle laserlineViewfinderStyle = LaserlineViewfinderStyle.LEGACY;
 
     private ViewfinderTypeAimer.FrameColor aimerViewfinderFrameColor = ViewfinderTypeAimer.FrameColor.DEFAULT;
     private ViewfinderTypeAimer.DotColor aimerViewfinderDotColor = ViewfinderTypeAimer.DotColor.DEFAULT;
@@ -199,42 +191,6 @@ public class ViewfinderRepository {
 
     public void setRectangularViewfinderLoopingEnabled(boolean enabled) {
         this.rectangularViewfinderLooping = enabled;
-    }
-
-    public LaserlineEnabledColor getLaserlineViewfinderEnabledColor() {
-        return laserlineViewfinderEnabledColor;
-    }
-
-    public void setLaserlineViewfinderEnabledColor(
-            LaserlineEnabledColor laserlineViewfinderEnabledColor
-    ) {
-        this.laserlineViewfinderEnabledColor = laserlineViewfinderEnabledColor;
-    }
-
-    public LaserlineDisabledColor getLaserlineViewfinderDisabledColor() {
-        return laserlineViewfinderDisabledColor;
-    }
-
-    public void setLaserlineViewfinderDisabledColor(
-            LaserlineDisabledColor laserlineViewfinderDisabledColor
-    ) {
-        this.laserlineViewfinderDisabledColor = laserlineViewfinderDisabledColor;
-    }
-
-    public FloatWithUnit getLaserlineViewfinderWidth() {
-        return laserlineViewfinderWidth;
-    }
-
-    public void setLaserlineViewfinderWidth(FloatWithUnit laserlineViewfinderWidth) {
-        this.laserlineViewfinderWidth = laserlineViewfinderWidth;
-    }
-
-    public LaserlineViewfinderStyle getLaserlineViewfinderStyle() {
-        return laserlineViewfinderStyle;
-    }
-
-    public void setLaserlineViewfinderStyle(LaserlineViewfinderStyle style) {
-        this.laserlineViewfinderStyle = style;
     }
 
     public ViewfinderTypeAimer.FrameColor getAimerViewfinderFrameColor() {
