@@ -15,8 +15,12 @@
 package com.scandit.shelf.javasettingssample;
 
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 import com.scandit.shelf.javasettingssample.ui.base.NavigationFragment;
 import com.scandit.shelf.javasettingssample.ui.login.LoginFragment;
@@ -32,6 +36,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
+        View fragmentContainer = findViewById(R.id.fragment_container);
+
+        // Handle edge-to-edge insets for Android 15+ compatibility - this ensures the ActionBar is below the status bar
+        ViewCompat.setOnApplyWindowInsetsListener(fragmentContainer, (view, windowInsets) -> {
+            Insets insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars());
+            view.setPadding(view.getPaddingLeft(), insets.top, view.getPaddingRight(), view.getPaddingBottom());
+            return windowInsets;
+        });
+
         if (savedInstanceState == null) {
             NavigationFragment initFragment = Authentication.isAuthenticated()
                     ? StoreSelectionFragment.newInstance()

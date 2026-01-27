@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="default_dimen_very_very_huge">120dp</dimen>
     <dimen name="default_dimen_very_huge">100dp</dimen>
     <dimen name="default_dimen_very_big">32dp</dimen>
     <dimen name="default_dimen_big">24dp</dimen>

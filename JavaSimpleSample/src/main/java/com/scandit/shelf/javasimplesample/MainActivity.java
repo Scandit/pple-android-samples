@@ -21,6 +21,9 @@ import android.widget.TextView;
 import androidx.annotation.StringRes;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.snackbar.Snackbar;
@@ -58,6 +61,14 @@ public class MainActivity extends CameraPermissionActivity {
         root = findViewById(R.id.container);
         captureView = findViewById(R.id.capture_view);
         status = findViewById(R.id.status_text_view);
+
+        // Handle edge-to-edge insets for Android 15+ compatibility - this ensures the ActionBar is below the status bar
+        ViewCompat.setOnApplyWindowInsetsListener(root, (view, windowInsets) -> {
+            Insets insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars());
+            view.setPadding(view.getPaddingLeft(), insets.top, view.getPaddingRight(), view.getPaddingBottom());
+            return windowInsets;
+        });
+
         observeLiveData();
         viewModel.authenticateAndFetchData();
     }

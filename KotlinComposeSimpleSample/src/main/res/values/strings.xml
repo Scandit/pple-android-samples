@@ -6,5 +6,4 @@
     <string name="store_download_failed">Failed to fetch the stores</string>
     <string name="stores_empty">Organization has no stores</string>
     <string name="catalog_update_failed">Failed to fetch the config and product catalog for the store</string>
-    <string name="request_camera_permission">Request Camera permission"</string>
 </resources>

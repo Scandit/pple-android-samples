@@ -59,7 +59,7 @@
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/top_snackbar"
         android:layout_width="0dp"
-        android:layout_height="@dimen/default_dimen_very_huge"
+        android:layout_height="@dimen/default_dimen_very_very_huge"
         android:layout_margin="@dimen/default_dimen_mid_big"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

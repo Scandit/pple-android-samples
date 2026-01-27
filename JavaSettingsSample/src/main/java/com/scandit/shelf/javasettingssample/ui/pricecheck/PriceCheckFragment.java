@@ -146,7 +146,7 @@ public class PriceCheckFragment extends CameraPermissionFragment {
         Snackbar snackbar = Snackbar.make(topSnackbar, snackbarData.getMessage(), Snackbar.LENGTH_LONG);
         snackbar.setBackgroundTint(ContextCompat.getColor(requireContext(), snackbarData.getBackgroundColorResId()));
         View snackbarView = snackbar.getView();
-        TextView textView = (TextView) snackbarView.findViewById(com.google.android.material.R.id.snackbar_text);
+        TextView textView = snackbarView.findViewById(com.google.android.material.R.id.snackbar_text);
         textView.setMaxLines(3);
         snackbar.show();
     }

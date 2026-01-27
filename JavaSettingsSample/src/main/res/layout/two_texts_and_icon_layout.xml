@@ -4,7 +4,7 @@
     android:id="@+id/two_texts_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?android:attr/selectableItemBackground"
+    android:foreground="?android:attr/selectableItemBackground"
     android:orientation="horizontal">
 
     <com.google.android.material.textview.MaterialTextView
